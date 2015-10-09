@@ -4,4 +4,17 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="green_dam">#005ebb</color>
+
+
+    <color name="white">#FFFFFF</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="message_love_background">#FA79B2</color>
+    <color name="tabsScrollColor">#8a140e</color>
+    <drawable name="pressed_gray">#0c000000</drawable>
+    <drawable name="selected_gray">#2c000000</drawable>
+    <color name="myTextPrimaryColor">#212121</color>
+    <color name="log_in_background">#2F4159</color>
+    <color name="btn_sigin">#03A9F4</color>
+    <color name="register_bg">#673AB7</color>
 </resources>
