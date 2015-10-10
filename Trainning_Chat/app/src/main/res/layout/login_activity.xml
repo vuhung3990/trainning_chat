@@ -21,7 +21,7 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="300dp"
+        android:layout_marginBottom="350dp"
         android:layout_marginLeft="50dp">
 
         <android.support.design.widget.TextInputLayout
@@ -45,7 +45,7 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="220dp"
+        android:layout_marginBottom="270dp"
         android:layout_marginLeft="50dp">
 
         <android.support.design.widget.TextInputLayout
@@ -59,12 +59,23 @@
                 android:layout_centerVertical="true"
                 android:gravity="center|left"
                 android:hint="Password"
-                android:inputType="textPassword"
+                android:inputType="textWebPassword"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hint_color" />
         </android.support.design.widget.TextInputLayout>
 
     </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/tvKeepMeSigin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="220dp"
+        android:layout_marginLeft="30dp"
+        android:text="Keep me siged in"
+        android:textColor="@color/btn_sigin_press"
+        android:textSize="@dimen/text_size_16" />
 
     <TextView
         android:id="@+id/tvForgotPassword"
@@ -73,7 +84,18 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="190dp"
         android:paddingLeft="30dp"
-        android:text="Forgot Password?"
+        android:text="Forgot Your Password?"
+        android:textColor="@color/btn_sigin_press"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/tvCreateAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="160dp"
+        android:paddingLeft="30dp"
+        android:text="Create new Account"
         android:textColor="@color/btn_sigin_press"
         android:textSize="@dimen/text_size_16" />
 
@@ -83,7 +105,7 @@
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="70dp"
         android:layout_marginLeft="50dp"
         android:background="@drawable/button_selector"
         android:text="LogIn"

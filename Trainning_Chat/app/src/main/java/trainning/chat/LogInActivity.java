@@ -1,19 +1,27 @@
 package trainning.chat;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
 import java.util.regex.Pattern;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -21,7 +29,7 @@ import java.util.regex.Pattern;
 public class LogInActivity extends AppCompatActivity {
     private EditText mEdtEmail, mEdtpass;
     private Button mBtnLogIn;
-    private TextView mTvForgotPassword;
+    private TextView mTvForgotPassword, mTvCreateAccount;
     private User mUser;
     private DatabaseHandler mDatabaseHandler;
     private Toolbar toolbar;
@@ -44,6 +52,13 @@ public class LogInActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Welcome");
         setSupportActionBar(toolbar);
+        mTvCreateAccount = (TextView) findViewById(R.id.tvCreateAccount);
+        mTvCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            }
+        });
         mTvForgotPassword = (TextView) findViewById(R.id.tvForgotPassword);
         mTvForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +66,7 @@ public class LogInActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), ForgotPasswordActivity.class));
             }
         });
-        mDatabaseHandler = new DatabaseHandler(this);
+//        mDatabaseHandler = new DatabaseHandler(this);
         mEdtpass = (EditText) findViewById(R.id.etPassword);
         mEdtEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -104,6 +119,10 @@ public class LogInActivity extends AppCompatActivity {
         mBtnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
+                mDialog.setTitle("Loging....");
+                mDialog.show();
+
                 String email = mEdtEmail.getText().toString();
                 String password = mEdtpass.getText().toString();
 
@@ -114,10 +133,29 @@ public class LogInActivity extends AppCompatActivity {
 
                 }
                 if (loginID_isLegal && loginPW_isLegal) {
-                    mUser = mDatabaseHandler.getUser(email);
-                    if (email.equals(mUser.getEmail()) && password.equals(mUser.getPassWord())) {
-                        startActivity(new Intent(getApplicationContext(), ChatActivity.class));
-                    }
+//                    mUser = mDatabaseHandler.getUser(email);
+//                    if (email.equals(mUser.getEmail()) && password.equals(mUser.getPassWord())) {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    RequestParams params = new RequestParams();
+                    params.put("email", email);
+                    params.put("password", password);
+                    client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Log.d("STATUS CODE", statusCode + "");
+                            Log.d("RESPONSE STRING", responseString + "");
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                            Log.d("STATUS CODE", statusCode + "");
+                            Log.d("RESPONSE STRING", responseString + "");
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                            mDialog.dismiss();
+
+                        }
+                    });
+//                    }
 
 
                 } else {

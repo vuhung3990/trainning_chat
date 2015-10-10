@@ -1,6 +1,7 @@
 package trainning.chat;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
 import java.util.regex.Pattern;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -96,6 +103,10 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
                                            @Override
                                            public void onClick(View view) {
+                                               final ProgressDialog mDialog = new ProgressDialog(RegisterActivity.this);
+                                               mDialog.setTitle("Creating account");
+                                               mDialog.setMessage("Please wait...");
+                                               mDialog.show();
                                                String userName = edtUsername.getText().toString();
                                                String email = edtEmail.getText().toString();
                                                String password = edtPassword.getText().toString();
@@ -107,9 +118,32 @@ public class RegisterActivity extends AppCompatActivity {
                                                }
                                                if (loginID_isLegal && loginPW_isLegal) {
                                                    if (password.equals(confirmPass)) {
-                                                       DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                                                       db.addUser(new User(userName, email, password));
-                                                       startActivity(new Intent(getApplicationContext(), LogInActivity.class));
+//                                                       DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+//                                                       db.addUser(new User(userName, email, password));
+
+//                                                       startActivity(new Intent(getApplicationContext(), LogInActivity.class));
+                                                       AsyncHttpClient client = new AsyncHttpClient();
+                                                       RequestParams params = new RequestParams();
+                                                       params.put("email", email);
+                                                       params.put("name", userName);
+                                                       params.put("password", password);
+                                                       client.post("http://trainningchat-vuhung3990.rhcloud.com/user", params, new TextHttpResponseHandler() {
+                                                           @Override
+                                                           public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+
+
+                                                           }
+
+                                                           @Override
+                                                           public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                                                               mDialog.dismiss();
+                                                               Toast.makeText(getApplicationContext(), "register success", Toast.LENGTH_SHORT).show();
+
+
+                                                           }
+                                                       });
+
 
                                                    } else {
                                                        Toast.makeText(getApplicationContext(), "password not match ", Toast.LENGTH_SHORT).show();

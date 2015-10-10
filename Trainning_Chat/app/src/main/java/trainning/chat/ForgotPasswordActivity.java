@@ -2,6 +2,7 @@ package trainning.chat;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 public class ForgotPasswordActivity extends AppCompatActivity {
     private EditText mEdtEmail;
     private Button mBtnForgotPassword;
+    private Toolbar mToolbar;
     public final int USERNAME_MAX = 256;
     public final int USERNAME_MIN = 3;
     public Pattern emailLegalPattern = Pattern
@@ -31,6 +33,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.forgot_password);
         mEdtEmail = (EditText) findViewById(R.id.etEmail);
         mBtnForgotPassword = (Button) findViewById(R.id.btnForgotPassword);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("Forgot Your Pasword");
+        setSupportActionBar(mToolbar);
         mEdtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
