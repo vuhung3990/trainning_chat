@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Trainning_Chat</string>
+
+    <string name="forgot_password_text">Enter your email to get your password.</string>
 </resources>

@@ -16,5 +16,8 @@
     <color name="myTextPrimaryColor">#212121</color>
     <color name="log_in_background">#2F4159</color>
     <color name="btn_sigin">#03A9F4</color>
+    <color name="btn_sigin_press">#0487c2</color>
     <color name="register_bg">#673AB7</color>
+    <color name="hint_color">#8c8c8c</color>
+    <color name="black">#000000</color>
 </resources>

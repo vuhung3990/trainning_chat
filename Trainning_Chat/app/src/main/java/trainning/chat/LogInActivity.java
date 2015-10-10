@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.regex.Pattern;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 public class LogInActivity extends AppCompatActivity {
     private EditText mEdtEmail, mEdtpass;
     private Button mBtnLogIn;
+    private TextView mTvForgotPassword;
     private User mUser;
     private DatabaseHandler mDatabaseHandler;
     private Toolbar toolbar;
@@ -42,6 +44,13 @@ public class LogInActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Welcome");
         setSupportActionBar(toolbar);
+        mTvForgotPassword = (TextView) findViewById(R.id.tvForgotPassword);
+        mTvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ForgotPasswordActivity.class));
+            }
+        });
         mDatabaseHandler = new DatabaseHandler(this);
         mEdtpass = (EditText) findViewById(R.id.etPassword);
         mEdtEmail.addTextChangedListener(new TextWatcher() {

@@ -18,6 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".LogInActivity"></activity>
+        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name=".ChatActivity"></activity>
+
     </application>
 
 </manifest>

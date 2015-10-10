@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/log_in_background"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,34 +21,23 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="250dp"
+        android:layout_marginBottom="300dp"
         android:layout_marginLeft="50dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_mail_new" />
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:background="@null"
-            android:gravity="center|left"
-            android:hint="Email address"
-            android:paddingLeft="15dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/green_dam"></View>
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:gravity="center|left"
+                android:hint="Email address"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+        </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -56,36 +45,37 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="190dp"
+        android:layout_marginBottom="220dp"
         android:layout_marginLeft="50dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_password_new" />
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:background="@null"
-            android:gravity="center|left"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:paddingLeft="15dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:gravity="center|left"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+        </android.support.design.widget.TextInputLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/green_dam"></View>
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="190dp"
+        android:paddingLeft="30dp"
+        android:text="Forgot Password?"
+        android:textColor="@color/btn_sigin_press"
+        android:textSize="@dimen/text_size_16" />
 
     <Button
         android:id="@+id/btnLogIn"
@@ -95,7 +85,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="100dp"
         android:layout_marginLeft="50dp"
-        android:background="@color/btn_sigin"
+        android:background="@drawable/button_selector"
         android:text="LogIn"
         android:textColor="@color/white"
         android:textSize="20dp" />
