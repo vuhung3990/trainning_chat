@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.activity;
 
 import android.app.Activity;
 

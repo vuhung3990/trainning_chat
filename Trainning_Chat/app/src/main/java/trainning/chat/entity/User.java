@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.entity;
 
 /**
  * Created by ASUS on 09/10/2015.

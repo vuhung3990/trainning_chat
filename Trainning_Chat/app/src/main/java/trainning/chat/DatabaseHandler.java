@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import trainning.chat.entity.User;
+
 /**
  * Created by ASUS on 09/10/2015.
  */

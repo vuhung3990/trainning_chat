@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import trainning.chat.R;
 import trainning.chat.adapter.ViewPagerAdapter;
 import trainning.chat.customview.SlidingTabLayout;
 import trainning.chat.entity.TabItem;
@@ -27,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPagerAdapter pagerAdapter;
     private List<TabItem> tabItems;
     private static SlidingTabLayout mSlidingTabLayout;
-    private String[] titles = {"History", "List User", "Setting"};
+    private String[] titles = {"Message", "Contact", "Setting"};
     private Fragment[] fragments = {new HistoryFragment(), new ListUserFragment(), new SettingFragment()};
 
 

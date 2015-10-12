@@ -1,8 +1,6 @@
-package trainning.chat;
+package trainning.chat.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +18,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
+import trainning.chat.R;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -106,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                final ProgressDialog mDialog = new ProgressDialog(RegisterActivity.this);
                                                mDialog.setTitle("Creating account");
                                                mDialog.setMessage("Please wait...");
-                                               mDialog.show();
+
                                                String userName = edtUsername.getText().toString();
                                                String email = edtEmail.getText().toString();
                                                String password = edtPassword.getText().toString();
@@ -120,7 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                    if (password.equals(confirmPass)) {
 //                                                       DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 //                                                       db.addUser(new User(userName, email, password));
-
+                                                       mDialog.show();
 //                                                       startActivity(new Intent(getApplicationContext(), LogInActivity.class));
                                                        AsyncHttpClient client = new AsyncHttpClient();
                                                        RequestParams params = new RequestParams();
@@ -130,7 +129,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                        client.post("http://trainningchat-vuhung3990.rhcloud.com/user", params, new TextHttpResponseHandler() {
                                                            @Override
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
 
 
                                                            }

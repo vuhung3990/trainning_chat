@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.regex.Pattern;
+
+import trainning.chat.R;
 
 /**
  * Created by ASUS on 10/10/2015.

@@ -1,8 +1,8 @@
-package trainning.chat;
+package trainning.chat.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,10 +11,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -22,6 +25,11 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
+import trainning.chat.DatabaseHandler;
+import trainning.chat.MySharePreferences;
+import trainning.chat.R;
+import trainning.chat.entity.ResponseString;
+import trainning.chat.entity.User;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -30,6 +38,7 @@ public class LogInActivity extends AppCompatActivity {
     private EditText mEdtEmail, mEdtpass;
     private Button mBtnLogIn;
     private TextView mTvForgotPassword, mTvCreateAccount;
+    private CheckBox cbKeepMeSigin;
     private User mUser;
     private DatabaseHandler mDatabaseHandler;
     private Toolbar toolbar;
@@ -49,8 +58,10 @@ public class LogInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         mEdtEmail = (EditText) findViewById(R.id.etEmail);
+        cbKeepMeSigin = (CheckBox) findViewById(R.id.tvKeepMeSigin);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Welcome");
+
         setSupportActionBar(toolbar);
         mTvCreateAccount = (TextView) findViewById(R.id.tvCreateAccount);
         mTvCreateAccount.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +78,7 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
 //        mDatabaseHandler = new DatabaseHandler(this);
+
         mEdtpass = (EditText) findViewById(R.id.etPassword);
         mEdtEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -121,10 +133,10 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
                 mDialog.setTitle("Loging....");
-                mDialog.show();
 
-                String email = mEdtEmail.getText().toString();
-                String password = mEdtpass.getText().toString();
+
+                final String email = mEdtEmail.getText().toString();
+                final String password = mEdtpass.getText().toString();
 
 
                 if (email.isEmpty() || password.isEmpty()) {
@@ -135,6 +147,7 @@ public class LogInActivity extends AppCompatActivity {
                 if (loginID_isLegal && loginPW_isLegal) {
 //                    mUser = mDatabaseHandler.getUser(email);
 //                    if (email.equals(mUser.getEmail()) && password.equals(mUser.getPassWord())) {
+                    mDialog.show();
                     AsyncHttpClient client = new AsyncHttpClient();
                     RequestParams params = new RequestParams();
                     params.put("email", email);
@@ -142,8 +155,20 @@ public class LogInActivity extends AppCompatActivity {
                     client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            Log.d("STATUS CODE", statusCode + "");
+                            Log.d("STATUS CODE_Fail", statusCode + "");
                             Log.d("RESPONSE STRING", responseString + "");
+                            mDialog.dismiss();
+                            if (statusCode == 400) {
+                                Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
+
+                            } else if (statusCode == 500) {
+                                Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
+                            } else if (statusCode == 404) {
+                                Toast.makeText(getApplicationContext(), "Email or Password is wrong", Toast.LENGTH_SHORT).show();
+
+                            }
+
+
                         }
 
                         @Override
@@ -152,7 +177,15 @@ public class LogInActivity extends AppCompatActivity {
                             Log.d("RESPONSE STRING", responseString + "");
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             mDialog.dismiss();
+                            Gson gson = new Gson();
+                            ResponseString st = gson.fromJson(responseString, ResponseString.class);
+                            String token = st.getToken();
+                            MySharePreferences.setValue(getApplicationContext(), "token", token);
+                            MySharePreferences.setValue(getApplicationContext(), "email", email);
+                            MySharePreferences.setValue(getApplicationContext(), "password", password);
+                            Log.d("TOKEN", token + "");
 
+                            finish();
                         }
                     });
 //                    }
@@ -178,5 +211,84 @@ public class LogInActivity extends AppCompatActivity {
 
             }
         });
+
+
+        cbKeepMeSigin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                saveAutoLogIn(b);
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getAutoLogIn()) {
+            String email = MySharePreferences.getValue(this, "email", "");
+            String token = MySharePreferences.getValue(this, "token", "");
+            String pass = MySharePreferences.getValue(this, "password", "");
+            mEdtEmail.setText(email);
+            mEdtpass.setText(pass);
+
+            autoLogIn(email, token);
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void autoLogIn(String email, String token) {
+        if ((email != null) && (token != null)) {
+            final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
+            mDialog.setTitle("Loging....");
+            mDialog.show();
+
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            RequestParams params = new RequestParams();
+            params.put("email", email);
+            params.put("token", token);
+            client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    mDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    // statusCode --- trạng thái sever trả về
+                    // statusCode = 200 --- connect thành công
+                    // statusCode = 400 --- connect bad request (sai mật khẩu)
+                    // statusCode = 500 --- connect không thành công (do sever)
+                    // statusCode = 404 --- connect không thành công (sai tài khoản)
+
+                    // responseString --- giá trị server trả về (chuỗi json)
+
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    mDialog.dismiss();
+                    finish();
+                }
+            });
+
+        }
+
+    }
+
+    private void saveAutoLogIn(boolean checked) {
+        MySharePreferences.setValue(getApplicationContext(), "checked", checked);
+    }
+
+    private Boolean getAutoLogIn() {
+        return MySharePreferences.getValue(getApplicationContext(), "checked", false);
+
+
     }
 }
