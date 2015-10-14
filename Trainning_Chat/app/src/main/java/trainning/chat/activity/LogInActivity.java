@@ -67,6 +67,21 @@ public class LogInActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Welcome");
 
+        if (getAutoLogIn()) {
+            String email = MySharePreferences.getValue(this, "email", "");
+            String token = MySharePreferences.getValue(this, "token", "");
+//            String pass = MySharePreferences.getValue(this, "password", "");
+            mEdtEmail.setText(email);
+            mEdtpass.setText(token);
+
+            if (email.isEmpty() || token.isEmpty()) {
+                return;
+            } else {
+                Log.d("Test-------------", token);
+                autoLogIn(email, token);
+            }
+        }
+
         setSupportActionBar(toolbar);
 
         this.mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -114,14 +129,12 @@ public class LogInActivity extends AppCompatActivity {
         mEdtpass.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 mEdtpass.setError(null);
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
@@ -144,15 +157,12 @@ public class LogInActivity extends AppCompatActivity {
                 final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
                 mDialog.setTitle("Loging....");
 
-
                 final String email = mEdtEmail.getText().toString();
                 final String password = mEdtpass.getText().toString();
-
 
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Can not be blank", Toast.LENGTH_SHORT).show();
                     return;
-
                 }
                 if (loginID_isLegal && loginPW_isLegal) {
 //                    mUser = mDatabaseHandler.getUser(email);
@@ -171,15 +181,11 @@ public class LogInActivity extends AppCompatActivity {
                             mDialog.dismiss();
                             if (statusCode == 400) {
                                 Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
-
                             } else if (statusCode == 500) {
                                 Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
                             } else if (statusCode == 404) {
                                 Toast.makeText(getApplicationContext(), "Email or Password is wrong", Toast.LENGTH_SHORT).show();
-
                             }
-
-
                         }
 
                         @Override
@@ -211,7 +217,6 @@ public class LogInActivity extends AppCompatActivity {
                             mEdtEmail.setError(">" + USERNAME_MAX);
                         } else if (mEdtEmail.length() < USERNAME_MIN) {
                             mEdtEmail.setError("<" + USERNAME_MIN);
-
                         } else {
                             mEdtEmail.setError("Email is wrong format");
                         }
@@ -222,10 +227,8 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     }
                 }
-
             }
         });
-
 
         cbKeepMeSigin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -234,37 +237,6 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
 
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (getAutoLogIn()) {
-            String email = MySharePreferences.getValue(this, "email", "");
-            String token = MySharePreferences.getValue(this, "token", "");
-//            String pass = MySharePreferences.getValue(this, "password", "");
-            mEdtEmail.setText(email);
-            mEdtpass.setText(token);
-            Log.d("EMAIL-------------", email);
-            Log.d("PASS-------------", token);
-
-            if (email.isEmpty() || token.isEmpty()) {
-
-                return;
-            } else {
-                Log.d("Test-------------", token);
-
-                autoLogIn(email, token);
-            }
-
-        }
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
     }
 
@@ -290,10 +262,10 @@ public class LogInActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
                     // statusCode --- trạng thái sever trả về
-                    // statusCode = 200 --- connect thành công
-                    // statusCode = 400 --- connect bad request (sai mật khẩu)
-                    // statusCode = 500 --- connect không thành công (do sever)
-                    // statusCode = 404 --- connect không thành công (sai tài khoản)
+                    // statusCode = 200 ---  thành công
+                    // statusCode = 400 ---  bad request (sai mật khẩu)
+                    // statusCode = 500 ---  không thành công (do sever)
+                    // statusCode = 404 ---  không thành công (sai tài khoản)
 
                     // responseString --- giá trị server trả về (chuỗi json)
 
@@ -313,7 +285,5 @@ public class LogInActivity extends AppCompatActivity {
 
     private Boolean getAutoLogIn() {
         return MySharePreferences.getValue(getApplicationContext(), "checked", false);
-
-
     }
 }

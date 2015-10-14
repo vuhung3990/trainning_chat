@@ -63,9 +63,7 @@ public class GCMRegister extends AsyncTask<Void, Void, String> {
         } else {
             Log.d(GCMConfig.LOG_TAG, "ERROR register ID null");
             callback.onFail();
-
         }
-
     }
 
     public interface registerListener {
