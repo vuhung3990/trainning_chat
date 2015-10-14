@@ -1,6 +1,7 @@
 package trainning.chat.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import trainning.chat.entity.HistoryUser;
 /**
  * Created by ASUS on 12/10/2015.
  */
-public class ContactAdapter extends BaseAdapter {
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<ContactUser> users;
     private LayoutInflater mInflater;
@@ -24,53 +25,36 @@ public class ContactAdapter extends BaseAdapter {
     public ContactAdapter(Context mContext, ArrayList<ContactUser> users) {
         this.mContext = mContext;
         this.users = users;
-        mInflater = LayoutInflater.from(mContext);
+        this.mInflater = LayoutInflater.from(mContext);
     }
 
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.item_contact_list, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        ContactUser user = users.get(position);
+        holder.mTvUserName.setText(user.getUsername());
+        holder.mTvEmail.setText(user.getEmail());
+    }
+
+    @Override
+    public int getItemCount() {
         return users.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return users.get(i);
-    }
 
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView mTvUserName, mTvEmail;
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
-        ContactUser user = users.get(i);
-        if (view == null) {
-            view = mInflater.inflate(R.layout.item_contact_list, viewGroup, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-
-
-        } else {
-            holder = (ViewHolder) view.getTag();
-
-
-        }
-        holder.userName.setText(user.getUsername());
-        holder.tvEmail.setText(user.getEmail());
-        return view;
-    }
-
-    class ViewHolder {
-        TextView userName;
-        TextView tvEmail;
-
-        public ViewHolder(View view) {
-            userName = (TextView) view.findViewById(R.id.tvUsername);
-            tvEmail = (TextView) view.findViewById(R.id.tvEmail);
-
-
+        public ViewHolder(View itemView) {
+            super(itemView);
+            mTvEmail = (TextView) itemView.findViewById(R.id.tvEmail);
+            mTvUserName = (TextView) itemView.findViewById(R.id.tvUsername);
         }
     }
 }

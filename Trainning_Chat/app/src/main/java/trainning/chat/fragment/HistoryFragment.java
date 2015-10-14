@@ -3,6 +3,8 @@ package trainning.chat.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +23,23 @@ import trainning.chat.entity.HistoryUser;
  */
 public class HistoryFragment extends Fragment {
 
-    private ListView mLvUser;
+    private RecyclerView mRcvUser;
     private ArrayList<HistoryUser> users;
     private HistoryAdapter mAdapter;
-
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.history_fragment, container, false);
-        mLvUser = (ListView) view.findViewById(R.id.lvHistory);
+        mRcvUser = (RecyclerView) view.findViewById(R.id.rcvHistory);
+        mRcvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
         users = new ArrayList<>();
         for (int i = 0; i < FixData.history_data_username.length; i++) {
             users.add(new HistoryUser(FixData.history_data_username[i],
                     FixData.history_data_message_latter[i], FixData.history_data_time[i]));
         }
         mAdapter = new HistoryAdapter(getActivity(), users);
-        mLvUser.setAdapter(mAdapter);
+        mRcvUser.setAdapter(mAdapter);
 
         return view;
 

@@ -137,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                            public void onSuccess(int statusCode, Header[] headers, String responseString) {
                                                                mDialog.dismiss();
                                                                Toast.makeText(getApplicationContext(), "register success", Toast.LENGTH_SHORT).show();
-
+                                                               finish();
 
                                                            }
                                                        });
@@ -158,7 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                            edtEmail.setError("<" + USERNAME_MIN);
 
                                                        } else {
-                                                           edtEmail.setError("Email not match");
+                                                           edtEmail.setError("Email is wrong format");
                                                        }
                                                    }
                                                    if (!loginPW_isLegal) {

@@ -1,6 +1,7 @@
 package trainning.chat.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 import trainning.chat.DatabaseHandler;
+import trainning.chat.GCMConfig;
+import trainning.chat.GCMRegister;
 import trainning.chat.MySharePreferences;
 import trainning.chat.R;
 import trainning.chat.entity.ResponseString;
@@ -41,12 +44,14 @@ public class LogInActivity extends AppCompatActivity {
     private CheckBox cbKeepMeSigin;
     private User mUser;
     private DatabaseHandler mDatabaseHandler;
+    private SharedPreferences mSharedPreferences;
     private Toolbar toolbar;
     private boolean loginID_isLegal = true;
     private boolean loginPW_isLegal = true;
     public final int USERNAME_MAX = 256;
     public final int USERNAME_MIN = 3;
     public final int PASSWORD_MIN = 8;
+    public String regID;
     public Pattern usernameLegalPattern = Pattern.compile("^[a-zA-Z0-9_.-@]+$");
     public Pattern emailLegalPattern = Pattern
             .compile("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@"
@@ -63,6 +68,11 @@ public class LogInActivity extends AppCompatActivity {
         toolbar.setTitle("Welcome");
 
         setSupportActionBar(toolbar);
+
+        this.mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
+//        Bundle bundle = getIntent().getExtras();
+//        regID = bundle.getString("regID");
+        regID = mSharedPreferences.getString(GCMConfig.PREFERENCE_KEY_REG_ID, null);
         mTvCreateAccount = (TextView) findViewById(R.id.tvCreateAccount);
         mTvCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +162,7 @@ public class LogInActivity extends AppCompatActivity {
                     RequestParams params = new RequestParams();
                     params.put("email", email);
                     params.put("password", password);
+                    params.put("reg_id", regID);
                     client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -180,9 +191,12 @@ public class LogInActivity extends AppCompatActivity {
                             Gson gson = new Gson();
                             ResponseString st = gson.fromJson(responseString, ResponseString.class);
                             String token = st.getToken();
-                            MySharePreferences.setValue(getApplicationContext(), "token", token);
-                            MySharePreferences.setValue(getApplicationContext(), "email", email);
-                            MySharePreferences.setValue(getApplicationContext(), "password", password);
+                            if (getAutoLogIn()) {
+                                MySharePreferences.setValue(getApplicationContext(), "token", token);
+                                MySharePreferences.setValue(getApplicationContext(), "email", email);
+                            }
+
+//                            MySharePreferences.setValue(getApplicationContext(), "password", password);
                             Log.d("TOKEN", token + "");
 
                             finish();
@@ -199,7 +213,7 @@ public class LogInActivity extends AppCompatActivity {
                             mEdtEmail.setError("<" + USERNAME_MIN);
 
                         } else {
-                            mEdtEmail.setError("Email not match");
+                            mEdtEmail.setError("Email is wrong format");
                         }
                     }
                     if (!loginPW_isLegal) {
@@ -229,13 +243,23 @@ public class LogInActivity extends AppCompatActivity {
         if (getAutoLogIn()) {
             String email = MySharePreferences.getValue(this, "email", "");
             String token = MySharePreferences.getValue(this, "token", "");
-            String pass = MySharePreferences.getValue(this, "password", "");
+//            String pass = MySharePreferences.getValue(this, "password", "");
             mEdtEmail.setText(email);
-            mEdtpass.setText(pass);
+            mEdtpass.setText(token);
+            Log.d("EMAIL-------------", email);
+            Log.d("PASS-------------", token);
 
-            autoLogIn(email, token);
+            if (email.isEmpty() || token.isEmpty()) {
+
+                return;
+            } else {
+                Log.d("Test-------------", token);
+
+                autoLogIn(email, token);
+            }
 
         }
+
     }
 
     @Override
@@ -255,6 +279,7 @@ public class LogInActivity extends AppCompatActivity {
             RequestParams params = new RequestParams();
             params.put("email", email);
             params.put("token", token);
+            params.put("reg_id", regID);
             client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
