@@ -21,11 +21,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private Context mContext;
     private ArrayList<HistoryUser> users;
     private LayoutInflater mInflater;
+    public static OnItemClickListener itemClickListener;
 
     public HistoryAdapter(Context mContext, ArrayList<HistoryUser> users) {
         this.mContext = mContext;
         this.users = users;
         this.mInflater = LayoutInflater.from(mContext);
+    }
+
+    public void setItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -52,7 +57,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTvUserName, mTvLastMessage, mTvTime;
 
         public ViewHolder(View itemView) {
@@ -60,6 +65,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             mTvLastMessage = (TextView) itemView.findViewById(R.id.tvMessage_latter);
             mTvUserName = (TextView) itemView.findViewById(R.id.tvUsername);
             mTvTime = (TextView) itemView.findViewById(R.id.tvTime);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            itemClickListener.setonItemClick(view);
+        }
+
+    }
+
+    public interface OnItemClickListener {
+
+
+        void setonItemClick(View view);
     }
 }

@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

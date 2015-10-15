@@ -1,4 +1,4 @@
-package trainning.chat.fragment;
+package trainning.chat.database;
 
 import android.content.ContentValues;
 import android.content.Context;

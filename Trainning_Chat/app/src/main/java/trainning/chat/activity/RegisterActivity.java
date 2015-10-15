@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
                     + "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" + ")+");
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -128,6 +129,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                        client.post("http://trainningchat-vuhung3990.rhcloud.com/user", params, new TextHttpResponseHandler() {
                                                            @Override
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                                               Log.d("STATUSTCODE", statusCode + "");
+
+
+
                                                            }
 
                                                            @Override
