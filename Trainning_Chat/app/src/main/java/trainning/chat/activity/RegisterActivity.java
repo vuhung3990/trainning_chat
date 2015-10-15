@@ -51,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
         edtPassword = (EditText) findViewById(R.id.etPassword);
         btnRegister = (Button) findViewById(R.id.btnReg);
 
-
         edtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -129,8 +128,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                        client.post("http://trainningchat-vuhung3990.rhcloud.com/user", params, new TextHttpResponseHandler() {
                                                            @Override
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-
                                                            }
 
                                                            @Override
@@ -138,14 +135,12 @@ public class RegisterActivity extends AppCompatActivity {
                                                                mDialog.dismiss();
                                                                Toast.makeText(getApplicationContext(), "register success", Toast.LENGTH_SHORT).show();
                                                                finish();
-
                                                            }
                                                        });
 
 
                                                    } else {
                                                        Toast.makeText(getApplicationContext(), "password not match ", Toast.LENGTH_SHORT).show();
-
                                                    }
 
                                                } else
@@ -167,13 +162,8 @@ public class RegisterActivity extends AppCompatActivity {
                                                        }
                                                    }
                                                }
-
-
                                            }
                                        }
-
         );
-
-
     }
 }

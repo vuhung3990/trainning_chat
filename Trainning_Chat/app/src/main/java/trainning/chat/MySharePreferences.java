@@ -8,22 +8,20 @@ import android.content.SharedPreferences;
  */
 public class MySharePreferences {
     public static void setValue(Context context, String key, String value) {
-        SharedPreferences preferences = context.getSharedPreferences("my_chat", 0);
+        SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
         editor.commit();
 
     }
     public static String getValue(Context context, String key, String defauseValue) {
-        SharedPreferences preferences = context.getSharedPreferences("my_chat", 0);
-
-
+        SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
         return preferences.getString(key, defauseValue);
     }
 
 
     public static void setValue(Context context, String key, boolean value) {
-        SharedPreferences preferences = context.getSharedPreferences("my_chat", 0);
+        SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(key, value);
         editor.commit();
@@ -31,9 +29,7 @@ public class MySharePreferences {
     }
 
     public static Boolean getValue(Context context, String key, Boolean defauseValue) {
-        SharedPreferences preferences = context.getSharedPreferences("my_chat", 0);
-
-
+        SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
         return preferences.getBoolean(key, defauseValue);
     }
 

@@ -44,14 +44,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.mTvMessage.setText(message.getMessage());
             holder.llMessage.setGravity(Gravity.RIGHT);
             holder.mTvMessage.setBackgroundResource(R.drawable.bubble_a);
-
         } else {
             holder.mTvMessage.setText(message.getMessage());
             holder.llMessage.setGravity(Gravity.LEFT);
             holder.mTvMessage.setBackgroundResource(R.drawable.bubble_b);
         }
-
-
     }
 
     @Override

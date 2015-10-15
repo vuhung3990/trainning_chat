@@ -51,10 +51,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public User getUser(String email) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_USER, new String[]{KEY_ID, KEY_USER_NAME, KEY_EMAIL, KEY_PASSWORD}, KEY_EMAIL + "=?", new String[]{email}, null, null, null);
+
+        User user = null;
         if (cursor != null) {
             cursor.moveToFirst();
+            user = new User(Integer.parseInt(cursor.getString(cursor.getColumnIndex(KEY_ID))), cursor.getString(cursor.getColumnIndex(KEY_USER_NAME)), cursor.getString(cursor.getColumnIndex(KEY_EMAIL)), cursor.getString(cursor.getColumnIndex(KEY_PASSWORD)));
         }
-        User user = new User(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3));
         return user;
     }
 
