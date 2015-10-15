@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.gcm;
 
 /**
  * Created by ASUS on 13/10/2015.

@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.database;
 
 /**
  * Created by ASUS on 12/10/2015.

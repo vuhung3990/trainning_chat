@@ -26,10 +26,9 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
-import trainning.chat.DatabaseHandler;
-import trainning.chat.GCMConfig;
-import trainning.chat.GCMRegister;
-import trainning.chat.MySharePreferences;
+import trainning.chat.database.DatabaseHandler;
+import trainning.chat.gcm.GCMConfig;
+import trainning.chat.preferences.MySharePreferences;
 import trainning.chat.R;
 import trainning.chat.entity.ResponseString;
 import trainning.chat.entity.User;
@@ -66,21 +65,7 @@ public class LogInActivity extends AppCompatActivity {
         cbKeepMeSigin = (CheckBox) findViewById(R.id.tvKeepMeSigin);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Welcome");
-
-        if (getAutoLogIn()) {
-            String email = MySharePreferences.getValue(this, "email", "");
-            String token = MySharePreferences.getValue(this, "token", "");
-//            String pass = MySharePreferences.getValue(this, "password", "");
-            mEdtEmail.setText(email);
-            mEdtpass.setText(token);
-
-            if (email.isEmpty() || token.isEmpty()) {
-                return;
-            } else {
-                Log.d("Test-------------", token);
-                autoLogIn(email, token);
-            }
-        }
+        mEdtpass = (EditText) findViewById(R.id.etPassword);
 
         setSupportActionBar(toolbar);
 
@@ -104,7 +89,21 @@ public class LogInActivity extends AppCompatActivity {
         });
 //        mDatabaseHandler = new DatabaseHandler(this);
 
-        mEdtpass = (EditText) findViewById(R.id.etPassword);
+        if (getAutoLogIn()) {
+            String email = MySharePreferences.getValue(this, "email", "");
+            String token = MySharePreferences.getValue(this, "token", "");
+//            String pass = MySharePreferences.getValue(this, "password", "");
+            mEdtEmail.setText(email);
+            mEdtpass.setText(token);
+
+            if (email.isEmpty() || token.isEmpty()) {
+                return;
+            } else {
+                Log.d("Test-------------", token);
+                autoLogIn(email, token);
+            }
+        }
+
         mEdtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

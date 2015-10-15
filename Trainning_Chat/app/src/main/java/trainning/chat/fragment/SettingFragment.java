@@ -10,9 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import trainning.chat.MySharePreferences;
+import trainning.chat.preferences.MySharePreferences;
 import trainning.chat.R;
 import trainning.chat.activity.LogInActivity;
 

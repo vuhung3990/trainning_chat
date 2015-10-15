@@ -1,4 +1,4 @@
-package trainning.chat;
+package trainning.chat.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,6 +48,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * get user saved in database
+     *
+     * @param email email you need get
+     */
     public User getUser(String email) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_USER, new String[]{KEY_ID, KEY_USER_NAME, KEY_EMAIL, KEY_PASSWORD}, KEY_EMAIL + "=?", new String[]{email}, null, null, null);

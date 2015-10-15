@@ -44,6 +44,7 @@
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
                         android:gravity="center|left"
+                        android:singleLine="true"
                         android:hint="Email address"
                         android:textColor="@color/black"
                         android:textColorHint="@color/hint_color" />
@@ -66,6 +67,7 @@
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
                         android:gravity="center|left"
+                        android:singleLine="true"
                         android:hint="Password"
                         android:inputType="textWebPassword"
                         android:textColor="@color/black"

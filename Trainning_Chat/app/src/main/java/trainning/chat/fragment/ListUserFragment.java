@@ -8,14 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import trainning.chat.FixData;
+import trainning.chat.database.FixData;
 import trainning.chat.R;
 import trainning.chat.adapter.ContactAdapter;
-import trainning.chat.adapter.HistoryAdapter;
 import trainning.chat.entity.ContactUser;
 
 /**
