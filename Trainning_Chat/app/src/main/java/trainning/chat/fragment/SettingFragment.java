@@ -1,5 +1,7 @@
 package trainning.chat.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import trainning.chat.MySharePreferences;
 import trainning.chat.R;
@@ -31,8 +34,31 @@ public class SettingFragment extends Fragment {
                 MySharePreferences.setValue(getActivity(), "email", null);
                 MySharePreferences.setValue(getActivity(), "token", null);
                 MySharePreferences.setValue(getActivity(), "checked", false);
-                startActivity(new Intent(getActivity(), LogInActivity.class));
-                getActivity().finish();
+
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setMessage("Are you sure want logOut?");
+
+                alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        arg0.cancel();
+                        getActivity().finish();
+                        startActivity(new Intent(getActivity(), LogInActivity.class));
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+
             }
         });
         return view;
