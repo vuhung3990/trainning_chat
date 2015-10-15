@@ -145,9 +145,3 @@ gen-external-apklibs
 
 ### AppEngine ###
 # Google App Engine generated folder
-appengine-generated/
-Trainning_Chat/gradlew
-Trainning_Chat/gradlew.bat
-Trainning_Chat/app/src/androidTest/
-Trainning_Chat/app/src/test/
-Trainning_Chat/gradle/
