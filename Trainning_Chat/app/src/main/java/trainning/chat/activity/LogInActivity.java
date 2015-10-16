@@ -267,7 +267,8 @@ public class LogInActivity extends AppCompatActivity {
                     // statusCode = 404 ---  không thành công (sai tài khoản)
 
                     // responseString --- giá trị server trả về (chuỗi json)
-
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString + "");
                     startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                     mDialog.dismiss();
                     finish();

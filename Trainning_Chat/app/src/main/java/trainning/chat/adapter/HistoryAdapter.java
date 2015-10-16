@@ -13,17 +13,18 @@ import java.util.ArrayList;
 
 import trainning.chat.R;
 import trainning.chat.entity.HistoryUser;
+import trainning.chat.entity.HistoryUserData;
 
 /**
  * Created by ASUS on 12/10/2015.
  */
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private Context mContext;
-    private ArrayList<HistoryUser> users;
+    private ArrayList<HistoryUserData> users;
     private LayoutInflater mInflater;
     public static OnItemClickListener itemClickListener;
 
-    public HistoryAdapter(Context mContext, ArrayList<HistoryUser> users) {
+    public HistoryAdapter(Context mContext, ArrayList<HistoryUserData> users) {
         this.mContext = mContext;
         this.users = users;
         this.mInflater = LayoutInflater.from(mContext);
@@ -45,10 +46,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        HistoryUser user = users.get(position);
-        holder.mTvUserName.setText(user.getUsername());
-        holder.mTvLastMessage.setText(user.getMessage_latter());
-        holder.mTvTime.setText(user.getTime());
+        HistoryUserData user = users.get(position);
+        holder.mTvUserName.setText(user.getFrom());
+        holder.mTvLastMessage.setText(user.getData());
+        holder.mTvTime.setText(user.getUpdated_at());
     }
 
     @Override
