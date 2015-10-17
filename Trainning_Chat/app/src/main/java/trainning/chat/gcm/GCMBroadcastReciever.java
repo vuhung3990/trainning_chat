@@ -4,14 +4,14 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
-import trainning.chat.entity.DataChat;
+import trainning.chat.entity.chatroom.DataChat;
+import trainning.chat.entity.chatroom.MessageChat;
 
 /**
  * Created by ASUS on 06/08/2015.
@@ -33,7 +33,7 @@ public class GCMBroadcastReciever extends WakefulBroadcastReceiver {
 //        Log.d("DSDSD", intent.getStringExtra("data"));
         if (intent.getStringExtra("data") != null) {
             Gson gson = new Gson();
-            DataChat content = gson.fromJson(intent.getStringExtra("data"), DataChat.class);
+            MessageChat content = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
             String data = content.getData();
             Log.d("DATA", data);
 

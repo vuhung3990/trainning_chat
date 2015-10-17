@@ -1,4 +1,4 @@
-package trainning.chat.entity;
+package trainning.chat.entity.history;
 
 import java.util.ArrayList;
 

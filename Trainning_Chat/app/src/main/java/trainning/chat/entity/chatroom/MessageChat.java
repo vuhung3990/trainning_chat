@@ -1,9 +1,9 @@
-package trainning.chat.entity;
+package trainning.chat.entity.chatroom;
 
 /**
- * Created by ASUS on 16/10/2015.
+ * Created by NGUYEN on 10/17/2015.
  */
-public class DataChat {
+public class MessageChat {
     private String from;
     private String to;
     private String type;

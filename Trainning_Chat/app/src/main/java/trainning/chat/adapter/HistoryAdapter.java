@@ -5,15 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import trainning.chat.R;
-import trainning.chat.entity.HistoryUser;
-import trainning.chat.entity.HistoryUserData;
+import trainning.chat.entity.history.HistoryUserData;
 
 /**
  * Created by ASUS on 12/10/2015.
@@ -47,9 +44,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         HistoryUserData user = users.get(position);
-        holder.mTvUserName.setText(user.getFrom());
+        holder.mTvUserName.setText(user.getEmail());
         holder.mTvLastMessage.setText(user.getData());
-        holder.mTvTime.setText(user.getUpdated_at());
+        holder.mTvTime.setText(user.getUpdated_at().getDate());
+        holder.pos = position;
     }
 
     @Override
@@ -60,6 +58,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTvUserName, mTvLastMessage, mTvTime;
+        public int pos;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -71,7 +70,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         @Override
         public void onClick(View view) {
-            itemClickListener.setonItemClick(view);
+            itemClickListener.setonItemClick(view, pos);
         }
 
     }
@@ -79,6 +78,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public interface OnItemClickListener {
 
 
-        void setonItemClick(View view);
+        void setonItemClick(View view, int position);
     }
 }

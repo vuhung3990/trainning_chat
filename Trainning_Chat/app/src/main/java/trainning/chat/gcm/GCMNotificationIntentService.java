@@ -16,7 +16,8 @@ import com.google.gson.Gson;
 
 import trainning.chat.R;
 import trainning.chat.activity.ChatActivity;
-import trainning.chat.entity.DataChat;
+import trainning.chat.entity.chatroom.DataChat;
+import trainning.chat.entity.chatroom.MessageChat;
 
 /**
  * Created by ASUS on 06/08/2015.
@@ -67,7 +68,7 @@ public class GCMNotificationIntentService extends IntentService {
 
                 messReceive = (String) extras.get("data");
                 Gson gson = new Gson();
-                DataChat content = gson.fromJson(intent.getStringExtra("data"), DataChat.class);
+                MessageChat content = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
                 String data = content.getData();
                 if (!ChatActivity.isrunning) {
                     sendNotification("" + data);

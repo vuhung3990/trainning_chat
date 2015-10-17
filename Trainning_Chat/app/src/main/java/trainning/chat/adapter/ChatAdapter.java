@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import trainning.chat.R;
-import trainning.chat.entity.ContactUser;
 import trainning.chat.entity.Message;
 
 /**

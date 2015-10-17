@@ -18,17 +18,13 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-import trainning.chat.activity.HomeActivity;
-import trainning.chat.database.FixData;
 import trainning.chat.R;
 import trainning.chat.activity.ChatActivity;
 import trainning.chat.adapter.HistoryAdapter;
-import trainning.chat.entity.DataChat;
-import trainning.chat.entity.HistoryUser;
-import trainning.chat.entity.HistoryUserData;
+import trainning.chat.entity.history.HistoryUser;
+import trainning.chat.entity.history.HistoryUserData;
 import trainning.chat.preferences.MySharePreferences;
 
 /**
@@ -39,7 +35,7 @@ public class HistoryFragment extends Fragment {
     private RecyclerView mRcvUser;
     private ArrayList<HistoryUser> users;
     private HistoryAdapter mAdapter;
-
+    ArrayList<HistoryUserData> datas;
 
     @Nullable
     @Override
@@ -62,20 +58,25 @@ public class HistoryFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Gson gson = new Gson();
                 HistoryUser content = gson.fromJson(responseString, HistoryUser.class);
-                ArrayList<HistoryUserData> datas = new ArrayList<HistoryUserData>();
+                datas = new ArrayList<HistoryUserData>();
                 datas = content.getData();
 
                 for (HistoryUserData data : datas) {
-                    Log.d("DATAA", data.getFrom() + "");
+                    Log.d("DATAA", data.getEmail() + "");
                 }
 
                 mAdapter = new HistoryAdapter(getActivity(), datas);
                 mRcvUser.setAdapter(mAdapter);
                 mAdapter.setItemClickListener(new HistoryAdapter.OnItemClickListener() {
                     @Override
-                    public void setonItemClick(View view) {
-                        startActivity(new Intent(getActivity(), ChatActivity.class));
+                    public void setonItemClick(View view, int position) {
+
+                        Intent intent = new Intent(getActivity(), ChatActivity.class);
+                        intent.putExtra("to", datas.get(position).getEmail());
+                        startActivity(intent);
+
                     }
+
                 });
 
             }
