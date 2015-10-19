@@ -62,7 +62,7 @@ public class HistoryFragment extends Fragment {
                 datas = content.getData();
 
                 for (HistoryUserData data : datas) {
-                    Log.d("DATAA", data.getEmail() + "");
+                    Log.d("History list DATA", data.getEmail() + "");
                 }
 
                 mAdapter = new HistoryAdapter(getActivity(), datas);
@@ -81,6 +81,7 @@ public class HistoryFragment extends Fragment {
 
             }
         });
+//        client.setTimeout(5000);
 
 //        for (int i = 0; i < FixData.history_data_username.length; i++) {
 //            users.add(new HistoryUser(FixData.history_data_username[i],

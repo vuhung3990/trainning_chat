@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import trainning.chat.entity.Message;
+import trainning.chat.entity.chatroom.Message;
 
 /**
  * Created by ASUS on 14/10/2015.

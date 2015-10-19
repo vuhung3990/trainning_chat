@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import trainning.chat.R;
 import trainning.chat.entity.history.HistoryUserData;
@@ -46,7 +49,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         HistoryUserData user = users.get(position);
         holder.mTvUserName.setText(user.getEmail());
         holder.mTvLastMessage.setText(user.getData());
-        holder.mTvTime.setText(user.getUpdated_at().getDate());
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(user.getUpdated_at().getDate());
+            String newString = new SimpleDateFormat("HH:mm:ss").format(date);
+
+            holder.mTvTime.setText(newString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         holder.pos = position;
     }
 

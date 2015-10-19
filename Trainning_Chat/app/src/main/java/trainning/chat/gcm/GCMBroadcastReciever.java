@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
@@ -29,18 +30,24 @@ public class GCMBroadcastReciever extends WakefulBroadcastReceiver {
 //        LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);
         ComponentName componentName = new ComponentName(context.getPackageName(), GCMNotificationIntentService.class.getName());
 
-
 //        Log.d("DSDSD", intent.getStringExtra("data"));
         if (intent.getStringExtra("data") != null) {
-            Gson gson = new Gson();
-            MessageChat content = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
-            String data = content.getData();
-            Log.d("DATA", data);
+            if (intent.getStringExtra("data").equals("[\"force logout\"]")) {
+                Log.d("LOG OUT", "LOG OUT");
+            } else {
+                Gson gson = new Gson();
 
-            EventBus.getDefault().post(data);
+                MessageChat message = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
+                String data = message.getData();
+                Log.d("DATA", data);
+
+                EventBus.getDefault().post(data);
+                startWakefulService(context, intent.setComponent(componentName));
+            }
+
         }
 
-        startWakefulService(context, intent.setComponent(componentName));
+
         setResultCode(Activity.RESULT_OK);
     }
 }

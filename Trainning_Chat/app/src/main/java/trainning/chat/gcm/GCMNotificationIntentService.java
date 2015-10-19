@@ -1,6 +1,7 @@
 package trainning.chat.gcm;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -43,6 +44,7 @@ public class GCMNotificationIntentService extends IntentService {
     }
 
     public String messReceive;
+    public String from_email;
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -58,20 +60,22 @@ public class GCMNotificationIntentService extends IntentService {
 
             // Check Message Error
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send Error" + extras.toString());
+                sendNotification(from_email, "Send Error" + extras.toString());
                 // Check Message Delete
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " + extras.toString());
+                sendNotification(from_email, "Deleted messages on server: " + extras.toString());
                 // Message receive
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
                     .equals(messageType)) {
-
-                messReceive = (String) extras.get("data");
+//                messReceive = (String) extras.get("data");
                 Gson gson = new Gson();
-                MessageChat content = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
-                String data = content.getData();
+                MessageChat message = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
+                Log.d("NotifiService Data", message.getData());
+                String data = message.getData();
+                from_email = message.getFrom();
+
                 if (!ChatActivity.isrunning) {
-                    sendNotification("" + data);
+                    sendNotification(from_email, "" + data);
                 }
 
                 Log.i(GCMConfig.LOG_TAG, "Received: " + extras.toString());
@@ -81,7 +85,7 @@ public class GCMNotificationIntentService extends IntentService {
 
     }
 
-    private void sendNotification(String msg) {
+    private void sendNotification(String email, String msg) {
 
 //        Bundle args = new Bundle();
 //        args.putString("stringmessage", msg);
@@ -103,6 +107,12 @@ public class GCMNotificationIntentService extends IntentService {
 //        // Set penddingIntent
 //        mBuilder.setContentIntent(contentIntent);
         Intent resultIntent = new Intent(this, ChatActivity.class);
+        if (email != null) {
+            resultIntent.putExtra("to", email);
+        } else {
+            return;
+        }
+
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(ChatActivity.class);
 
@@ -110,7 +120,7 @@ public class GCMNotificationIntentService extends IntentService {
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
-
+        mBuilder.setAutoCancel(true);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         Log.d(GCMConfig.LOG_TAG, "Notification sent successfully.");
     }

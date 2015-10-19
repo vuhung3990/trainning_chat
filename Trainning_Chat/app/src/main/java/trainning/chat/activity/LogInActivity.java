@@ -202,13 +202,13 @@ public class LogInActivity extends AppCompatActivity {
                             }
 
 //                            MySharePreferences.setValue(getApplicationContext(), "password", password);
-                            Log.d("TOKEN", token + "");
+                            Log.d("TOKEN LOGIN", token + "");
 
                             finish();
                         }
                     });
 //                    }
-
+//                    client.setTimeout(5000);
 
                 } else {
                     if (!loginID_isLegal) {
@@ -274,7 +274,7 @@ public class LogInActivity extends AppCompatActivity {
                     finish();
                 }
             });
-
+//            client.setTimeout(5000);
         }
 
     }

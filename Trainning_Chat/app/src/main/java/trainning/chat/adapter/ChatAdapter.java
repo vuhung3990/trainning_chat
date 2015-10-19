@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import trainning.chat.R;
-import trainning.chat.entity.Message;
+import trainning.chat.entity.chatroom.Message;
 
 /**
  * Created by ASUS on 14/10/2015.
@@ -42,6 +42,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         if (message.getId() == 1) {
             holder.mTvMessage.setText(message.getMessage());
             holder.llMessage.setGravity(Gravity.RIGHT);
+
+            holder.mTvTime.setText(message.getTime());
+            if (message.getStatus() == false) {
+                holder.mTvStatus.setText("Fail");
+
+            } else {
+                holder.mTvStatus.setText("Success");
+            }
             holder.mTvMessage.setBackgroundResource(R.drawable.bubble_a);
         } else {
             holder.mTvMessage.setText(message.getMessage());
@@ -58,11 +66,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTvMessage;
         public LinearLayout llMessage;
+        public TextView mTvTime;
+        public TextView mTvStatus;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTvMessage = (TextView) itemView.findViewById(R.id.tvMessage);
             llMessage = (LinearLayout) itemView.findViewById(R.id.llMessage);
+            mTvTime = (TextView) itemView.findViewById(R.id.tvTime);
+            mTvStatus = (TextView) itemView.findViewById(R.id.tvStatus);
         }
     }
 }
