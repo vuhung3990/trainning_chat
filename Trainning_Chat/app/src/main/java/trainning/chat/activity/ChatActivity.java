@@ -16,6 +16,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +38,7 @@ import trainning.chat.preferences.MySharePreferences;
  */
 public class ChatActivity extends Activity {
     private HashMap<Integer, ArrayList<Message>> map = new HashMap<>();
-
+    private ArrayList<ArrayList<Message>> arrtong = new ArrayList<>();
     private ArrayList<Message> messages;
     private ChatAdapter mAdapter;
     private RecyclerView mRcvChat;
@@ -77,7 +78,9 @@ public class ChatActivity extends Activity {
         client.get("http://trainningchat-vuhung3990.rhcloud.com/roomChatHistory", params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("Send message Fail", responseString);
+
+                if (responseString != null)
+                    Log.d("Send message Fail", responseString);
             }
 
             @Override
@@ -91,38 +94,59 @@ public class ChatActivity extends Activity {
                     Collections.reverse(messageChats);
                     for (MessageChat message : messageChats) {
 
-                        Log.d("TIME---", message.getCreated_at());
                         if (message.getFrom().equals(emailfrom)) {
+
                             message.setId(1);
 
                         } else {
                             message.setId(2);
                         }
-                        messages.add(new Message(message.getId(), message.getData(), message.getUpdated_at(), true));
+                        messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
 
                     }
-//                    for (int i = 0; i < messages.size(); i++) {
-//                        if (messages.get(i).getTime().equals(messages.get(i + 1).getTime())) {
-//                            message_byTimes.add(messages.get(i));
-//                            if (i == messages.size() - 2) {
-//                                message_byTimes.add(messages.get(i + 1));
-//                                map.put(i, message_byTimes);
-//                            }
-//                        } else {
-//                            message_byTimes.add(messages.get(i));
-//                            map.put(i, message_byTimes);
-//                            message_byTimes = new ArrayList<Message>();
-//
-//                        }
-//
-//
-//                    }
+                    for (int i = 0; i < messages.size() - 1; i++) {
+                        Log.d("TIME---", messages.get(i).getTime());
+
+                        Date date1 = null;
+                        Date date2 = null;
+                        try {
+                            date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i).getTime());
+                            date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i + 1).getTime());
+                            String newString1 = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+                            String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
+                            if (newString1.equals(newString2)) {
+                                message_byTimes.add(messages.get(i));
+                                if (i == messages.size() - 2) {
+                                    message_byTimes.add(messages.get(i + 1));
+                                    arrtong.add(message_byTimes);
+                                }
+                            } else {
+                                message_byTimes.add(messages.get(i));
+                                arrtong.add(message_byTimes);
+                                message_byTimes = new ArrayList<Message>();
+
+
+                            }
+
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+//                    startDate = df.parse(startDateString);
+
+
+                    for (int i = 0; i < arrtong.size(); i++) {
+                        Log.d("ArrTong.SIZE", arrtong.get(i).size() + "");
+                    }
+
+
 //                    arrAdapter = new ChatAdapter[messages.size()];
 
-                    mAdapter = new ChatAdapter(ChatActivity.this, messages);
+                    mAdapter = new ChatAdapter(ChatActivity.this, arrtong.get(0));
                     mRcvChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
                     mRcvChat.setAdapter(mAdapter);
-                    mRcvChat.scrollToPosition(messages.size() - 1);
+                    mRcvChat.scrollToPosition(arrtong.get(0).size() - 1);
                 }
 
             }
