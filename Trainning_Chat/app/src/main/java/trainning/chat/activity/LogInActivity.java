@@ -202,13 +202,13 @@ public class LogInActivity extends AppCompatActivity {
                             }
 
 //                            MySharePreferences.setValue(getApplicationContext(), "password", password);
-                            Log.d("TOKEN", token + "");
+                            Log.d("TOKEN LOGIN", token + "");
 
                             finish();
                         }
                     });
 //                    }
-
+//                    client.setTimeout(5000);
 
                 } else {
                     if (!loginID_isLegal) {
@@ -267,13 +267,14 @@ public class LogInActivity extends AppCompatActivity {
                     // statusCode = 404 ---  không thành công (sai tài khoản)
 
                     // responseString --- giá trị server trả về (chuỗi json)
-
+                    Log.d("STATUS CODE", statusCode + "");
+                    Log.d("RESPONSE STRING", responseString + "");
                     startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                     mDialog.dismiss();
                     finish();
                 }
             });
-
+//            client.setTimeout(5000);
         }
 
     }

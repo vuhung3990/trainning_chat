@@ -5,14 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import trainning.chat.R;
-import trainning.chat.entity.ContactUser;
-import trainning.chat.entity.HistoryUser;
+import trainning.chat.entity.contact.ContactUser;
 
 /**
  * Created by ASUS on 12/10/2015.

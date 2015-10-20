@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import trainning.chat.database.FixData;
 import trainning.chat.R;
 import trainning.chat.adapter.ContactAdapter;
-import trainning.chat.entity.ContactUser;
+import trainning.chat.entity.contact.ContactUser;
 
 /**
  * Created by ASUS on 10/10/2015.

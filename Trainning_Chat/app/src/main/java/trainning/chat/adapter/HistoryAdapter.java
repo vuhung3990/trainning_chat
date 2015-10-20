@@ -5,25 +5,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import trainning.chat.R;
-import trainning.chat.entity.HistoryUser;
+import trainning.chat.entity.history.HistoryUserData;
 
 /**
  * Created by ASUS on 12/10/2015.
  */
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private Context mContext;
-    private ArrayList<HistoryUser> users;
+    private ArrayList<HistoryUserData> users;
     private LayoutInflater mInflater;
     public static OnItemClickListener itemClickListener;
 
-    public HistoryAdapter(Context mContext, ArrayList<HistoryUser> users) {
+    public HistoryAdapter(Context mContext, ArrayList<HistoryUserData> users) {
         this.mContext = mContext;
         this.users = users;
         this.mInflater = LayoutInflater.from(mContext);
@@ -45,10 +46,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        HistoryUser user = users.get(position);
-        holder.mTvUserName.setText(user.getUsername());
-        holder.mTvLastMessage.setText(user.getMessage_latter());
-        holder.mTvTime.setText(user.getTime());
+        HistoryUserData user = users.get(position);
+        holder.mTvUserName.setText(user.getEmail());
+        holder.mTvLastMessage.setText(user.getData());
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(user.getUpdated_at().getDate());
+            String newString = new SimpleDateFormat("HH:mm:ss").format(date);
+
+            holder.mTvTime.setText(newString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        holder.pos = position;
     }
 
     @Override
@@ -59,6 +70,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTvUserName, mTvLastMessage, mTvTime;
+        public int pos;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,7 +82,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         @Override
         public void onClick(View view) {
-            itemClickListener.setonItemClick(view);
+            itemClickListener.setonItemClick(view, pos);
         }
 
     }
@@ -78,6 +90,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public interface OnItemClickListener {
 
 
-        void setonItemClick(View view);
+        void setonItemClick(View view, int position);
     }
 }
