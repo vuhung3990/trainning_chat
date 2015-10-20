@@ -19,10 +19,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private Context mContext;
     private ArrayList<ContactUser> users;
     private LayoutInflater mInflater;
+    private OnItemClickListener onItemClickListener;
 
-    public ContactAdapter(Context mContext, ArrayList<ContactUser> users) {
+
+    public ContactAdapter(Context mContext, ArrayList<ContactUser> users, OnItemClickListener onItemClickListener) {
         this.mContext = mContext;
         this.users = users;
+        this.onItemClickListener = onItemClickListener;
         this.mInflater = LayoutInflater.from(mContext);
     }
 
@@ -36,8 +39,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ContactUser user = users.get(position);
-        holder.mTvUserName.setText(user.getUsername());
+        holder.mTvUserName.setText(user.getName());
         holder.mTvEmail.setText(user.getEmail());
+        holder.pos = position;
     }
 
     @Override
@@ -46,13 +50,25 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTvUserName, mTvEmail;
+        public int pos;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTvEmail = (TextView) itemView.findViewById(R.id.tvEmail);
             mTvUserName = (TextView) itemView.findViewById(R.id.tvUsername);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.setOnItemClick(pos);
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener {
+        void setOnItemClick(int position);
+
     }
 }

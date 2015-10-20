@@ -7,19 +7,29 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+
 import java.util.ArrayList;
 
+import cz.msebera.android.httpclient.Header;
+import trainning.chat.activity.ChatActivity;
 import trainning.chat.database.FixData;
 import trainning.chat.R;
 import trainning.chat.adapter.ContactAdapter;
 import trainning.chat.activity.AddFriendActivity;
 import trainning.chat.entity.contact.ContactUser;
+import trainning.chat.entity.contact.Contacts;
 import trainning.chat.entity.history.HistoryUserData;
+import trainning.chat.preferences.MySharePreferences;
 
 /**
  * Created by ASUS on 10/10/2015.
@@ -30,7 +40,6 @@ public class ListUserFragment extends Fragment {
     private ContactAdapter mAdapter;
     private Context mContext;
     private RecyclerView mRcvUser;
-    ArrayList<HistoryUserData> datas;
     private TextView tvAddFreind;
 
     @Nullable
@@ -48,12 +57,40 @@ public class ListUserFragment extends Fragment {
         });
 
         mRcvContact.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         users = new ArrayList<>();
-        for (int i = 0; i < FixData.history_data_username.length; i++) {
-            users.add(new ContactUser(FixData.history_data_username[i],
-                    FixData.history_data_email[i]));
-        }
-        mAdapter = new ContactAdapter(getActivity(), users);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("email", MySharePreferences.getValue(getActivity(), "email", ""));
+        client.get("http://trainningchat-vuhung3990.rhcloud.com/friendList", params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("CONTACT-LIST", responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d("CONTACT-LIST", responseString);
+                if (responseString != null) {
+                    Gson gson = new Gson();
+                    Contacts contact = gson.fromJson(responseString, Contacts.class);
+                    users = contact.getData();
+
+                }
+            }
+        });
+
+
+        mAdapter = new ContactAdapter(getActivity(), users, new ContactAdapter.OnItemClickListener() {
+            @Override
+            public void setOnItemClick(int position) {
+
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("to", users.get(position).getEmail());
+                startActivity(intent);
+            }
+        });
         mRcvContact.setAdapter(mAdapter);
 
         return view;

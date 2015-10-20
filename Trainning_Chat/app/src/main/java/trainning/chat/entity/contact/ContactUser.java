@@ -4,20 +4,20 @@ package trainning.chat.entity.contact;
  * Created by ASUS on 12/10/2015.
  */
 public class ContactUser {
-    private String username;
+    private String name;
     private String email;
 
-    public ContactUser(String username, String email) {
-        this.username = username;
+    public ContactUser(String name, String email) {
+        this.name = name;
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
