@@ -31,6 +31,7 @@ import trainning.chat.adapter.ChatAdapter;
 import trainning.chat.entity.chatroom.DataChat;
 import trainning.chat.entity.chatroom.Message;
 import trainning.chat.entity.chatroom.MessageChat;
+import trainning.chat.entity.chatroom.OnLoadMoreListener;
 import trainning.chat.preferences.MySharePreferences;
 
 /**
@@ -55,12 +56,22 @@ public class ChatActivity extends Activity {
     private String emailfrom;
     private ArrayList<Message> message_byTimes = new ArrayList<>();
     private ChatAdapter[] arrAdapter;
+    private int count[];
+    private ArrayList<Message> messageFirst = new ArrayList<>();
+    private int loadlimit;
+    private android.os.Handler mHandler = new android.os.Handler();
+    private int k;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_activity);
         mRcvChat = (RecyclerView) findViewById(R.id.tbChat);
+        mRcvChat.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        mRcvChat.setLayoutManager(layoutManager);
         btnSend = (Button) findViewById(R.id.btnSend);
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         emailfrom = MySharePreferences.getValue(this, "email", "");
@@ -91,64 +102,65 @@ public class ChatActivity extends Activity {
                     Gson gson = new Gson();
                     DataChat dataChat = gson.fromJson(responseString, DataChat.class);
                     messageChats = dataChat.getData();
-                    Collections.reverse(messageChats);
-                    for (MessageChat message : messageChats) {
+//                    Collections.reverse(messageChats);
+                    if (messageChats.size() > 0) {
+                        for (MessageChat message : messageChats) {
 
-                        if (message.getFrom().equals(emailfrom)) {
+                            if (message.getFrom().equals(emailfrom)) {
 
-                            message.setId(1);
+                                message.setId(1);
 
-                        } else {
-                            message.setId(2);
-                        }
-                        messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
-
-                    }
-                    for (int i = 0; i < messages.size() - 1; i++) {
-                        Log.d("TIME---", messages.get(i).getTime());
-
-                        Date date1 = null;
-                        Date date2 = null;
-                        try {
-                            date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i).getTime());
-                            date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i + 1).getTime());
-                            String newString1 = new SimpleDateFormat("yyyy-MM-dd").format(date1);
-                            String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
-                            if (newString1.equals(newString2)) {
-                                message_byTimes.add(messages.get(i));
-                                if (i == messages.size() - 2) {
-                                    message_byTimes.add(messages.get(i + 1));
-                                    arrtong.add(message_byTimes);
-                                }
                             } else {
-                                message_byTimes.add(messages.get(i));
-                                arrtong.add(message_byTimes);
-                                message_byTimes = new ArrayList<Message>();
-
-
+                                message.setId(2);
                             }
+                            messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
 
-
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         }
-                    }
+
+                        loadDataFirst();
+
+//                        for (int i = 0; i < messages.size() - 1; i++) {
+//                            Log.d("TIME---", messages.get(i).getTime());
+//
+//                            Date date1 = null;
+//                            Date date2 = null;
+//                            try {
+//                                date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i).getTime());
+//                                date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i + 1).getTime());
+//                                String newString1 = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+//                                String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
+//                                if (newString1.equals(newString2)) {
+//                                    message_byTimes.add(messages.get(i));
+//                                    if (i == messages.size() - 2) {
+//                                        message_byTimes.add(messages.get(i + 1));
+//                                        arrtong.add(message_byTimes);
+//                                    }
+//                                } else {
+//                                    message_byTimes.add(messages.get(i));
+//                                    arrtong.add(message_byTimes);
+//                                    message_byTimes = new ArrayList<Message>();
+//
+//
+//                                }
+//
+//
+//                            } catch (ParseException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
 //                    startDate = df.parse(startDateString);
 
 
-                    for (int i = 0; i < arrtong.size(); i++) {
-                        Log.d("ArrTong.SIZE", arrtong.get(i).size() + "");
-                    }
+//                        for (int i = 0; i < arrtong.size(); i++) {
+//                            Log.d("ArrTong.SIZE", arrtong.get(i).size() + "");
+//                        }
 
 
 //                    arrAdapter = new ChatAdapter[messages.size()];
 
-                    mAdapter = new ChatAdapter(ChatActivity.this, arrtong.get(0));
-                    mRcvChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-                    mRcvChat.setAdapter(mAdapter);
-                    mRcvChat.scrollToPosition(arrtong.get(0).size() - 1);
-                }
 
+                    }
+                }
             }
         });
 
@@ -177,6 +189,14 @@ public class ChatActivity extends Activity {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         Log.d("ChatActivity chatstatus", statusCode + "__" + responseString);
+                        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        dateFormatter.setLenient(false);
+                        Date today = new Date();
+                        String s = dateFormatter.format(today);
+                        messageFirst.add(new Message(1, edtMessage.getText().toString(), s, false));
+                        mAdapter.notifyDataSetChanged();
+                        edtMessage.setText(null);
+                        mRcvChat.scrollToPosition(messageFirst.size() - 1);
                     }
 
                     @Override
@@ -188,10 +208,10 @@ public class ChatActivity extends Activity {
                         String s = dateFormatter.format(today);
 //                        Log.d("CHAT TIME", s);
 
-                        messages.add(new Message(1, edtMessage.getText().toString(), s, true));
+                        messageFirst.add(new Message(1, edtMessage.getText().toString(), s, true));
                         mAdapter.notifyDataSetChanged();
                         edtMessage.setText(null);
-                        mRcvChat.scrollToPosition(messages.size() - 1);
+                        mRcvChat.scrollToPosition(messageFirst.size() - 1);
                     }
                 });
 
@@ -253,5 +273,124 @@ public class ChatActivity extends Activity {
 
     }
 
+    public void loadData() {
 
+        for (int i = 0; i < messages.size() - 1; i++) {
+//            Log.d("TIME---", messages.get(i).getTime());
+
+            Date date1 = null;
+            Date date2 = null;
+            try {
+                date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i).getTime());
+                date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i + 1).getTime());
+                String newString1 = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+                String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
+                if (newString1.equals(newString2)) {
+                    message_byTimes.add(messages.get(i));
+                    break;
+
+                }
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void loadDataFirst() {
+//        Collections.reverse(messages);
+        for (int i = 0; i < messages.size() - 1; i++) {
+//            Log.d("TIME---", messages.get(i).getTime());
+
+            Date date1 = null;
+            Date date2 = null;
+            try {
+                date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i).getTime());
+                date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(messages.get(i + 1).getTime());
+                String newString1 = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+                String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
+                if (!newString1.equals(newString2)) {
+                    loadlimit = i;
+                    break;
+
+                }
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < loadlimit; i++) {
+            messageFirst.add(messages.get(i));
+            Log.d("TIME---", messages.get(i).getTime());
+        }
+
+        Collections.reverse(messageFirst);
+
+        mAdapter = new ChatAdapter(messageFirst, mRcvChat);
+
+        mRcvChat.setAdapter(mAdapter);
+        mRcvChat.scrollToPosition(messageFirst.size() - 1);
+        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                Log.d("LOAD MORE", "touch scroll");
+
+                loadMoreData();
+
+            }
+        });
+    }
+
+    public void loadMoreData() {
+        k = loadlimit;
+        for (int i = k; i < messages.size() - 1; i++) {
+//            Log.d("TIME---", messages.get(i).getTime());
+
+            Date date1 = null;
+            Date date2 = null;
+            try {
+                date1 = new SimpleDateFormat("yyyy-MM-dd").parse(messages.get(i).getTime());
+                date2 = new SimpleDateFormat("yyyy-MM-dd").parse(messages.get(i + 1).getTime());
+                String newString1 = new SimpleDateFormat("yyyy-MM-dd").format(date1);
+                String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
+
+//                date1.compareTo(date2)
+                if (!newString1.equals(newString2)) {
+                    loadlimit = i;
+                    Log.d("LOAD LIMIT", loadlimit + "");
+                    break;
+
+                }
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        messageFirst.add(null);
+        Collections.reverse(messageFirst);
+        mAdapter.notifyItemInserted(0);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                messageFirst.remove(0);
+                mAdapter.notifyItemRemoved(0);
+
+                for (int i = k; i < loadlimit; i++) {
+                    messageFirst.add(messages.get(i));
+                    Log.d("TIME---", messages.get(i).getTime());
+                    mAdapter.notifyItemInserted(messageFirst.size());
+                }
+
+//                Collections.reverse(messageFirst);
+
+                mAdapter.setLoaded();
+            }
+        }, 2000);
+
+    }
 }

@@ -4,16 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
-    </LinearLayout>
 
     <trainning.chat.customview.SlidingTabLayout
         android:id="@+id/tabs"

@@ -8,7 +8,7 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    
+
     <permission
         android:name="com.gcm.nguyen.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -33,6 +33,7 @@
         <activity android:name=".activity.RegisterActivity"></activity>
         <activity android:name=".activity.ForgotPasswordActivity"></activity>
         <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.AddFriendActivity"></activity>
 
         <receiver
             android:name=".gcm.GCMBroadcastReciever"
