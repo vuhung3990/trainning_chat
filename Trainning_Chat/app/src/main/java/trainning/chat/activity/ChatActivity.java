@@ -32,7 +32,8 @@ import trainning.chat.entity.chatroom.DataChat;
 import trainning.chat.entity.chatroom.Message;
 import trainning.chat.entity.chatroom.MessageChat;
 import trainning.chat.entity.chatroom.OnLoadMoreListener;
-import trainning.chat.preferences.MySharePreferences;
+import trainning.chat.util.MySharePreferences;
+import trainning.chat.util.Utils;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -69,8 +70,8 @@ public class ChatActivity extends Activity {
         mRcvChat = (RecyclerView) findViewById(R.id.tbChat);
         mRcvChat.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+//        layoutManager.setReverseLayout(true);
+//        layoutManager.setStackFromEnd(true);
         mRcvChat.setLayoutManager(layoutManager);
         btnSend = (Button) findViewById(R.id.btnSend);
         edtMessage = (EditText) findViewById(R.id.edtMessage);
@@ -86,7 +87,7 @@ public class ChatActivity extends Activity {
         Log.d("Email From", emailfrom);
         params.put("to", to);
         Log.d("Email To", to);
-        client.get("http://trainningchat-vuhung3990.rhcloud.com/roomChatHistory", params, new TextHttpResponseHandler() {
+        client.get(Utils.API_CHAT_ROOM, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
@@ -114,8 +115,12 @@ public class ChatActivity extends Activity {
                                 message.setId(2);
                             }
                             messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
-
+                            Log.d("CHAT-DATA", message.getUpdated_at());
                         }
+
+//                        mAdapter = new ChatAdapter(messages, mRcvChat);
+//                        mRcvChat.setAdapter(mAdapter);
+//                        mRcvChat.scrollToPosition(messages.size() - 1);
 
                         loadDataFirst();
 
@@ -185,7 +190,7 @@ public class ChatActivity extends Activity {
 
 
 //                params.put("reg_id", "APA91bFx7W0vQOC2gHoWkt9IZDXYj7gbvKxAs19FacwjYQkPt1FWYMjRCZn6BbXqfg5VBQjOzWkvRUvIeOqcA1EKsq7_JAmGMabIySw2YeAvPVjLkbVWZJ0");
-                client.post("http://trainningchat-vuhung3990.rhcloud.com/chat", params, new TextHttpResponseHandler() {
+                client.post(Utils.API_GCM_CHAT, params, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         Log.d("ChatActivity chatstatus", statusCode + "__" + responseString);
@@ -345,8 +350,9 @@ public class ChatActivity extends Activity {
     }
 
     public void loadMoreData() {
+        Log.d("LOAD LIMIT--------", loadlimit + "");
         k = loadlimit;
-        for (int i = k; i < messages.size() - 1; i++) {
+        for (int i = loadlimit; i < messages.size() - 1; i++) {
 //            Log.d("TIME---", messages.get(i).getTime());
 
             Date date1 = null;
@@ -359,7 +365,10 @@ public class ChatActivity extends Activity {
 
 //                date1.compareTo(date2)
                 if (!newString1.equals(newString2)) {
-                    loadlimit = i;
+                    loadlimit++;
+                    message_byTimes.clear();
+                    message_byTimes.add(messages.get(i));
+
                     Log.d("LOAD LIMIT", loadlimit + "");
                     break;
 
@@ -370,9 +379,9 @@ public class ChatActivity extends Activity {
                 e.printStackTrace();
             }
         }
-
-        messageFirst.add(null);
-        Collections.reverse(messageFirst);
+        Collections.reverse(message_byTimes);
+        messageFirst.add(0, null);
+//        Collections.reverse(messageFirst);
         mAdapter.notifyItemInserted(0);
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -380,12 +389,9 @@ public class ChatActivity extends Activity {
                 messageFirst.remove(0);
                 mAdapter.notifyItemRemoved(0);
 
-                for (int i = k; i < loadlimit; i++) {
-                    messageFirst.add(messages.get(i));
-                    Log.d("TIME---", messages.get(i).getTime());
-                    mAdapter.notifyItemInserted(messageFirst.size());
-                }
-
+                messageFirst.addAll(0, message_byTimes);
+                mAdapter.notifyItemInserted(messageFirst.size());
+//                mRcvChat.scrollToPosition(k);
 //                Collections.reverse(messageFirst);
 
                 mAdapter.setLoaded();

@@ -7,28 +7,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:weightSum="4">
+        android:weightSum="8">
 
-        <TextView
+        <SearchView
+            android:id="@+id/searchView"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="search" />
+            android:layout_height="wrap_content"
+            android:layout_weight="7">
+
+        </SearchView>
 
         <TextView
             android:id="@+id/tvAddFreind"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="add freind" />
+            android:background="@mipmap/ic_add"
+            android:gravity="center" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcvContact"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:dividerHeight="2dp"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="2dp"></android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

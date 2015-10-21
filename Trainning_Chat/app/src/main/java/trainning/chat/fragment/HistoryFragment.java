@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -25,7 +26,9 @@ import trainning.chat.activity.ChatActivity;
 import trainning.chat.adapter.HistoryAdapter;
 import trainning.chat.entity.history.HistoryUser;
 import trainning.chat.entity.history.HistoryUserData;
-import trainning.chat.preferences.MySharePreferences;
+import trainning.chat.util.MySharePreferences;
+import trainning.chat.util.RequestUtils;
+import trainning.chat.util.Utils;
 
 /**
  * Created by ASUS on 10/10/2015.
@@ -44,14 +47,11 @@ public class HistoryFragment extends Fragment {
         mRcvUser = (RecyclerView) view.findViewById(R.id.rcvHistory);
         mRcvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
         users = new ArrayList<>();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("email", MySharePreferences.getValue(getActivity(), "email", ""));
-        client.get("http://trainningchat-vuhung3990.rhcloud.com/chatHistory", params, new TextHttpResponseHandler() {
+        String email = MySharePreferences.getValue(getActivity(), "email", "");
+        RequestUtils.getHistoryList(email, new RequestUtils.historyCallback() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                Toast.makeText(getActivity(), "Get list Fail,please check network", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -78,15 +78,8 @@ public class HistoryFragment extends Fragment {
                     }
 
                 });
-
             }
         });
-//        client.setTimeout(5000);
-
-//        for (int i = 0; i < FixData.history_data_username.length; i++) {
-//            users.add(new HistoryUser(FixData.history_data_username[i],
-//                    FixData.history_data_message_latter[i], FixData.history_data_time[i]));
-//        }
 
 
         return view;

@@ -64,11 +64,21 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                     onItemClickListener.setOnItemClick(pos);
                 }
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    onItemClickListener.setOnItemLongClick(pos);
+                    return false;
+                }
+            });
         }
     }
 
     public interface OnItemClickListener {
         void setOnItemClick(int position);
 
+        void setOnItemLongClick(int position);
     }
+
+
 }

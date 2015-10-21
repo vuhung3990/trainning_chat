@@ -28,10 +28,12 @@ import java.util.regex.Pattern;
 import cz.msebera.android.httpclient.Header;
 import trainning.chat.database.DatabaseHandler;
 import trainning.chat.gcm.GCMConfig;
-import trainning.chat.preferences.MySharePreferences;
+import trainning.chat.util.MySharePreferences;
 import trainning.chat.R;
 import trainning.chat.entity.ResponseString;
 import trainning.chat.entity.User;
+import trainning.chat.util.RequestUtils;
+import trainning.chat.util.Utils;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -51,6 +53,7 @@ public class LogInActivity extends AppCompatActivity {
     public final int USERNAME_MIN = 3;
     public final int PASSWORD_MIN = 8;
     public String regID;
+    public String token;
     public Pattern usernameLegalPattern = Pattern.compile("^[a-zA-Z0-9_.-@]+$");
     public Pattern emailLegalPattern = Pattern
             .compile("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" + "\\@"
@@ -167,12 +170,7 @@ public class LogInActivity extends AppCompatActivity {
 //                    mUser = mDatabaseHandler.getUser(email);
 //                    if (email.equals(mUser.getEmail()) && password.equals(mUser.getPassWord())) {
                     mDialog.show();
-                    AsyncHttpClient client = new AsyncHttpClient();
-                    RequestParams params = new RequestParams();
-                    params.put("email", email);
-                    params.put("password", password);
-                    params.put("reg_id", regID);
-                    client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
+                    RequestUtils.logIn(email, password, null, false, regID, new RequestUtils.logInCallback() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                             Log.d("STATUS CODE_Fail", statusCode + "");
@@ -207,8 +205,7 @@ public class LogInActivity extends AppCompatActivity {
                             finish();
                         }
                     });
-//                    }
-//                    client.setTimeout(5000);
+
 
                 } else {
                     if (!loginID_isLegal) {
@@ -244,14 +241,7 @@ public class LogInActivity extends AppCompatActivity {
             final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
             mDialog.setTitle("Loging....");
             mDialog.show();
-
-
-            AsyncHttpClient client = new AsyncHttpClient();
-            RequestParams params = new RequestParams();
-            params.put("email", email);
-            params.put("token", token);
-            params.put("reg_id", regID);
-            client.post("http://trainningchat-vuhung3990.rhcloud.com/login", params, new TextHttpResponseHandler() {
+            RequestUtils.logIn(email, null, token, true, regID, new RequestUtils.logInCallback() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     mDialog.dismiss();
@@ -260,7 +250,7 @@ public class LogInActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    // statusCode --- trạng thái sever trả về
+//                    statusCode-- - trạng thái sever trả về
                     // statusCode = 200 ---  thành công
                     // statusCode = 400 ---  bad request (sai mật khẩu)
                     // statusCode = 500 ---  không thành công (do sever)
@@ -274,7 +264,8 @@ public class LogInActivity extends AppCompatActivity {
                     finish();
                 }
             });
-//            client.setTimeout(5000);
+
+
         }
 
     }

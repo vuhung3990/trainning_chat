@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 import trainning.chat.R;
+import trainning.chat.util.RequestUtils;
+import trainning.chat.util.Utils;
 
 /**
  * Created by ASUS on 09/10/2015.
@@ -117,21 +119,13 @@ public class RegisterActivity extends AppCompatActivity {
                                                }
                                                if (loginID_isLegal && loginPW_isLegal) {
                                                    if (password.equals(confirmPass)) {
-//                                                       DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-//                                                       db.addUser(new User(userName, email, password));
                                                        mDialog.show();
-//                                                       startActivity(new Intent(getApplicationContext(), LogInActivity.class));
-                                                       AsyncHttpClient client = new AsyncHttpClient();
-                                                       RequestParams params = new RequestParams();
-                                                       params.put("email", email);
-                                                       params.put("name", userName);
-                                                       params.put("password", password);
-                                                       client.post("http://trainningchat-vuhung3990.rhcloud.com/user", params, new TextHttpResponseHandler() {
+                                                       RequestUtils.register(email, userName, password, new RequestUtils.registerCallback() {
                                                            @Override
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                                                Log.d("STATUSTCODE", statusCode + "");
-
-
+                                                               Toast.makeText(getApplicationContext(), "register not success, please check network", Toast.LENGTH_SHORT).show();
+                                                               mDialog.dismiss();
 
                                                            }
 
