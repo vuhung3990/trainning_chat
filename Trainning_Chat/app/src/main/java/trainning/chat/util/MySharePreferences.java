@@ -14,11 +14,24 @@ public class MySharePreferences {
         editor.commit();
 
     }
+
     public static String getValue(Context context, String key, String defauseValue) {
         SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
         return preferences.getString(key, defauseValue);
     }
 
+    public static void setValue(Context context, String key, int value) {
+        SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(key, value);
+        editor.commit();
+
+    }
+
+    public static int getValue(Context context, String key, int defauseValue) {
+        SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
+        return preferences.getInt(key, defauseValue);
+    }
 
     public static void setValue(Context context, String key, boolean value) {
         SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
@@ -32,7 +45,6 @@ public class MySharePreferences {
         SharedPreferences preferences = context.getSharedPreferences("my_chat", Context.MODE_PRIVATE);
         return preferences.getBoolean(key, defauseValue);
     }
-
 
 
 }

@@ -33,7 +33,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
+    private int lastVisibleItem, totalItemCount, firstVisibleItem;
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
@@ -52,11 +52,12 @@ public class ChatAdapter extends RecyclerView.Adapter {
                     super.onScrolled(recyclerView, dx, dy);
                     Log.d("SCROLll", "SCRoll touch");
 //                            int visibleItemCount = recyclerView.getChildCount();
-                    totalItemCount = linearLayoutManager.getItemCount();
-                    lastVisibleItem = linearLayoutManager
-                            .findLastVisibleItemPosition();
+//                    totalItemCount = linearLayoutManager.getItemCount();
+//                    lastVisibleItem = linearLayoutManager
+//                            .findLastVisibleItemPosition();
+                    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                     if (!loading
-                            && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                            && firstVisibleItem <= visibleThreshold) {
                         // End has been reached
                         // Do something
                         if (onLoadMoreListener != null) {

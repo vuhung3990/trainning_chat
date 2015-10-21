@@ -61,7 +61,7 @@ public class ChatActivity extends Activity {
     private ArrayList<Message> messageFirst = new ArrayList<>();
     private int loadlimit;
     private android.os.Handler mHandler = new android.os.Handler();
-    private int k;
+    private int k = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,13 +117,22 @@ public class ChatActivity extends Activity {
                             messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
                             Log.d("CHAT-DATA", message.getUpdated_at());
                         }
-
+                        Log.d("messages", messages.size() + "");
 //                        mAdapter = new ChatAdapter(messages, mRcvChat);
 //                        mRcvChat.setAdapter(mAdapter);
 //                        mRcvChat.scrollToPosition(messages.size() - 1);
 
                         loadDataFirst();
+                        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+                            @Override
+                            public void onLoadMore() {
+//                                Log.d("LOAD MORE", "touch scroll");
+//                                loadlimit = MySharePreferences.getValue(getApplicationContext(), "limited", 0);
+//                                loadMoreData(loadlimit + 10);
+                                loadMoreDemo();
 
+                            }
+                        });
 //                        for (int i = 0; i < messages.size() - 1; i++) {
 //                            Log.d("TIME---", messages.get(i).getTime());
 //
@@ -303,6 +312,7 @@ public class ChatActivity extends Activity {
         }
     }
 
+
     public void loadDataFirst() {
 //        Collections.reverse(messages);
         for (int i = 0; i < messages.size() - 1; i++) {
@@ -333,26 +343,59 @@ public class ChatActivity extends Activity {
         }
 
         Collections.reverse(messageFirst);
-
+        Log.d("messageFirst ", messageFirst.size() + "");
         mAdapter = new ChatAdapter(messageFirst, mRcvChat);
 
         mRcvChat.setAdapter(mAdapter);
         mRcvChat.scrollToPosition(messageFirst.size() - 1);
-        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                Log.d("LOAD MORE", "touch scroll");
-
-                loadMoreData();
-
-            }
-        });
+//        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore() {
+//                Log.d("LOAD MORE", "touch scroll");
+//
+//                loadMoreData(loadlimit);
+//
+//            }
+//        });
     }
 
-    public void loadMoreData() {
-        Log.d("LOAD LIMIT--------", loadlimit + "");
-        k = loadlimit;
-        for (int i = loadlimit; i < messages.size() - 1; i++) {
+    public void loadMoreDemo() {
+
+        messageFirst.add(0, null);
+//        Collections.reverse(messageFirst);
+        mAdapter.notifyItemInserted(0);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                messageFirst.remove(0);
+                mAdapter.notifyItemRemoved(0);
+                int start = messageFirst.size();
+                int end = start + 10;
+                if (end < messages.size()) {
+                    for (int i = 0; i < end; i++) {
+                        messageFirst.add(messages.get(i));
+
+                    }
+                } else {
+                    return;
+                }
+                Collections.reverse(messageFirst);
+                mAdapter.notifyDataSetChanged();
+                mAdapter.setLoaded();
+
+            }
+        }, 2000);
+
+
+    }
+
+
+    public void loadMoreData(int limit) {
+        Log.d("LOAD LIMIT--------", limit + "");
+
+        message_byTimes.clear();
+        for (int i = limit + 1; i < messages.size() - 1; i++) {
 //            Log.d("TIME---", messages.get(i).getTime());
 
             Date date1 = null;
@@ -364,14 +407,16 @@ public class ChatActivity extends Activity {
                 String newString2 = new SimpleDateFormat("yyyy-MM-dd").format(date2);
 
 //                date1.compareTo(date2)
-                if (!newString1.equals(newString2)) {
-                    loadlimit++;
-                    message_byTimes.clear();
+                if (newString1.equals(newString2)) {
+                    limit++;
                     message_byTimes.add(messages.get(i));
 
-                    Log.d("LOAD LIMIT", loadlimit + "");
-                    break;
+                    Log.d("LOAD LIMIT", limit + "");
 
+
+                } else {
+
+                    break;
                 }
 
 
@@ -379,6 +424,8 @@ public class ChatActivity extends Activity {
                 e.printStackTrace();
             }
         }
+//        k = limit;
+        Log.d("message_byTimes", message_byTimes.size() + "");
         Collections.reverse(message_byTimes);
         messageFirst.add(0, null);
 //        Collections.reverse(messageFirst);
@@ -390,13 +437,24 @@ public class ChatActivity extends Activity {
                 mAdapter.notifyItemRemoved(0);
 
                 messageFirst.addAll(0, message_byTimes);
+                Log.d("messageFirst load more", messageFirst.size() + "");
                 mAdapter.notifyItemInserted(messageFirst.size());
 //                mRcvChat.scrollToPosition(k);
 //                Collections.reverse(messageFirst);
 
                 mAdapter.setLoaded();
+
             }
         }, 2000);
+        MySharePreferences.setValue(getApplicationContext(), "limited", limit);
+//        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore() {
+//
+//                Log.d("KKKKKKKKKK", k + "");
+//                loadMoreData(k);
+//            }
+//        });
 
     }
 }

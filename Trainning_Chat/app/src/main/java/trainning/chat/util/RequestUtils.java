@@ -32,18 +32,32 @@ import trainning.chat.entity.history.HistoryUserData;
  */
 public class RequestUtils {
 
-    public static void logIn(String email, String password, String token, boolean autoLogIn, String regID, final logInCallback logInCallback) {
+    public static void logIn(String email, String password, String regID, final logInCallback logInCallback) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        if (!autoLogIn) {
-            params.put("email", email);
-            params.put("password", password);
-            params.put("reg_id", regID);
-        } else {
-            params.put("email", email);
-            params.put("token", token);
-            params.put("reg_id", regID);
-        }
+        params.put("email", email);
+        params.put("password", password);
+        params.put("reg_id", regID);
+        client.post(Utils.API_LOGIN, params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                logInCallback.onFailure(statusCode, headers, responseString, throwable);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                logInCallback.onSuccess(statusCode, headers, responseString);
+            }
+        });
+
+    }
+
+    public static void autoLogIn(String email, String token, String regID, final logInCallback logInCallback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("email", email);
+        params.put("token", token);
+        params.put("reg_id", regID);
         client.post(Utils.API_LOGIN, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

@@ -170,7 +170,7 @@ public class LogInActivity extends AppCompatActivity {
 //                    mUser = mDatabaseHandler.getUser(email);
 //                    if (email.equals(mUser.getEmail()) && password.equals(mUser.getPassWord())) {
                     mDialog.show();
-                    RequestUtils.logIn(email, password, null, false, regID, new RequestUtils.logInCallback() {
+                    RequestUtils.logIn(email, password, regID, new RequestUtils.logInCallback() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                             Log.d("STATUS CODE_Fail", statusCode + "");
@@ -194,9 +194,10 @@ public class LogInActivity extends AppCompatActivity {
                             Gson gson = new Gson();
                             ResponseString st = gson.fromJson(responseString, ResponseString.class);
                             String token = st.getToken();
+                            MySharePreferences.setValue(getApplicationContext(), "email", email);
                             if (getAutoLogIn()) {
                                 MySharePreferences.setValue(getApplicationContext(), "token", token);
-                                MySharePreferences.setValue(getApplicationContext(), "email", email);
+
                             }
 
 //                            MySharePreferences.setValue(getApplicationContext(), "password", password);
@@ -241,15 +242,17 @@ public class LogInActivity extends AppCompatActivity {
             final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
             mDialog.setTitle("Loging....");
             mDialog.show();
-            RequestUtils.logIn(email, null, token, true, regID, new RequestUtils.logInCallback() {
+            RequestUtils.autoLogIn(email, token, regID, new RequestUtils.logInCallback() {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.d("LogIn Fail", statusCode + "---" + responseString);
                     mDialog.dismiss();
                     Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    Log.d("LogIn Success", statusCode + "---" + responseString);
 //                    statusCode-- - trạng thái sever trả về
                     // statusCode = 200 ---  thành công
                     // statusCode = 400 ---  bad request (sai mật khẩu)

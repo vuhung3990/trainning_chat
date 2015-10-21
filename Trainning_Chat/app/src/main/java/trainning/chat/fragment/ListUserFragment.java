@@ -165,7 +165,7 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
         RequestUtils.getContactList(my_email, new RequestUtils.contactCallback() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("CONTACT-LIST", responseString);
+//                Log.d("CONTACT-LIST", responseString);
             }
 
             @Override
