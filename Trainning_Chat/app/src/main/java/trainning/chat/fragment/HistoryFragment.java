@@ -27,6 +27,9 @@ import de.greenrobot.event.Subscribe;
 import trainning.chat.R;
 import trainning.chat.activity.ChatActivity;
 import trainning.chat.adapter.HistoryAdapter;
+import trainning.chat.entity.chatroom.Message;
+import trainning.chat.entity.chatroom.MessageChat;
+import trainning.chat.entity.history.HistoryItem;
 import trainning.chat.entity.history.HistoryUser;
 import trainning.chat.entity.history.HistoryUserData;
 import trainning.chat.util.MySharePreferences;
@@ -39,10 +42,20 @@ import trainning.chat.util.Utils;
 public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private Context mContext;
     private RecyclerView mRcvUser;
-    private ArrayList<HistoryUser> users;
+    //    private ArrayList<HistoryUser> users;
     private HistoryAdapter mAdapter;
     ArrayList<HistoryUserData> datas;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ArrayList<HistoryItem> users = new ArrayList<>();
+    private MessageChat message;
+
+    public void setMessage(MessageChat message) {
+        this.message = message;
+    }
+
+    public MessageChat getMessage() {
+        return message;
+    }
 
     @Nullable
     @Override
@@ -54,47 +67,35 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mRcvUser = (RecyclerView) view.findViewById(R.id.rcvHistory);
 
         mRcvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
-        users = new ArrayList<>();
+//        users = new ArrayList<>();
 
         getHistory();
         return view;
 
     }
 
-//    @Subscribe
-//    public void getFlagMessage(String email) {
-//        if (email != "") {
-//            for (int i = 0; i < datas.size(); i++) {
-//                if (email.equals(datas.get(i).getEmail())) {
-//
-//
-//                }
-//                ;
-//
-//            }
-//
-//        }
-//
-//
-//    }
+    @Subscribe
+    public void getMessage(MessageChat msg) {
+        if (msg != null) {
+            setMessage(msg);
+            showMessageNew(msg);
+        }
 
-    //    @Override
-//    public void onResume() {
-//        EventBus.getDefault().register(this);
-//        Log.d("eventbus register", "register");
-//        getHistory();
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        EventBus.getDefault().unregister(this);
-//        Log.d("eventbus register", "unregister");
-//        super.onPause();
-//    }
+    }
+
     @Override
     public void onResume() {
+        EventBus.getDefault().register(this);
+        Log.d("eventbus register", "register");
+//        getHistory();
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        Log.d("eventbus register", "unregister");
+        super.onPause();
     }
 
     public void getHistory() {
@@ -116,15 +117,24 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 datas = content.getData();
 
                 for (HistoryUserData data : datas) {
+                    users.add(new HistoryItem(data.getEmail(), data.getData(), data.getCreated_at().getDate(), false));
+
                     Log.d("History list DATA", data.getEmail() + "");
                 }
 
-                mAdapter = new HistoryAdapter(getActivity(), datas);
+                mAdapter = new HistoryAdapter(getContext(), users);
                 mRcvUser.setAdapter(mAdapter);
                 mAdapter.setItemClickListener(new HistoryAdapter.OnItemClickListener() {
                     @Override
                     public void setonItemClick(View view, int position) {
+                        if (users.get(position).getEmail().equals(getMessage().getFrom())) {
+                            users.get(position).setFlag_inbox(false);
+                            Log.d("AAAAAA", "AAAA");
+                            mAdapter.notifyDataSetChanged();
 
+
+
+                        }
                         Intent intent = new Intent(getActivity(), ChatActivity.class);
                         intent.putExtra("to", datas.get(position).getEmail());
                         startActivity(intent);
@@ -137,6 +147,17 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     }
 
+    public void showMessageNew(MessageChat message) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getEmail().equals(message.getFrom())) {
+                users.get(i).setFlag_inbox(true);
+                mAdapter.notifyDataSetChanged();
+            }
+
+        }
+
+    }
+
     @Override
     public void onRefresh() {
         mSwipeRefreshLayout.post(new Runnable() {
@@ -145,7 +166,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-        datas.clear();
+        users.clear();
         mAdapter.notifyDataSetChanged();
         getHistory();
     }

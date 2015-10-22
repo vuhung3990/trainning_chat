@@ -2,6 +2,7 @@ package trainning.chat.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -26,7 +27,7 @@ import trainning.chat.fragment.SettingFragment;
 /**
  * Created by ASUS on 10/10/2015.
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends FragmentActivity {
     private ViewPager viewPager;
     private ViewPagerAdapter pagerAdapter;
     private List<TabItem> tabItems;

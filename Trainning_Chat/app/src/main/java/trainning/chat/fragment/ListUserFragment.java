@@ -195,7 +195,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                     saveListUserForSearchView.addAll(users);
 
                     Log.d("CONTACT-SIZE", users.size() + "");
-                    mAdapter = new ContactAdapter(getActivity(), users, new ContactAdapter.OnItemClickListener() {
+                    mAdapter = new ContactAdapter(getContext(), users, new ContactAdapter.OnItemClickListener() {
                         @Override
                         public void setOnItemClick(int position) {
                             Log.d("CONTACT-POSSTION", position + "");

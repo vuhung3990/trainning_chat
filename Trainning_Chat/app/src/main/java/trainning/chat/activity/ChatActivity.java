@@ -3,6 +3,7 @@ package trainning.chat.activity;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -130,7 +131,7 @@ public class ChatActivity extends Activity {
                             } else {
                                 message.setId(2);
                             }
-                            messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
+                            messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), Utils.KEY_SEND_SUCCESS));
                             Log.d("CHAT-DATA", message.getUpdated_at());
                         }
                         Collections.reverse(messages);
@@ -212,7 +213,14 @@ public class ChatActivity extends Activity {
                 params.put("token", token);
                 params.put("type", "text");
                 params.put("data", message_input);
-
+                DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                dateFormatter.setLenient(false);
+                Date today = new Date();
+                String s = dateFormatter.format(today);
+                messages.add(new Message(1, message_input, s, Utils.KEY_SEND_SENDING));
+                mAdapter.notifyDataSetChanged();
+                edtMessage.setText(null);
+                mRcvChat.scrollToPosition(messages.size() - 1);
 
                 Log.d("ChatActivity Message", edtMessage.getText() + "");
 
@@ -225,29 +233,17 @@ public class ChatActivity extends Activity {
                             Toast.makeText(getApplicationContext(), "Send message fail , Acount not activated", Toast.LENGTH_SHORT).show();
                         }
 
-                        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        dateFormatter.setLenient(false);
-                        Date today = new Date();
-                        String s = dateFormatter.format(today);
-                        messages.add(new Message(1, edtMessage.getText().toString(), s, false));
+
+                        messages.get(messages.size() - 1).setStatus(Utils.KEY_SEND_FAIL);
                         mAdapter.notifyDataSetChanged();
-                        edtMessage.setText(null);
                         mRcvChat.scrollToPosition(messages.size() - 1);
                     }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
                         Log.d("ChatActivity chatstatus", responseString);
-                        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        dateFormatter.setLenient(false);
-                        Date today = new Date();
-                        String s = dateFormatter.format(today);
-//                        Log.d("CHAT TIME", s);
-
-                        messages.add(new Message(1, edtMessage.getText().toString(), s, true));
+                        messages.get(messages.size() - 1).setStatus(Utils.KEY_SEND_SUCCESS);
                         mAdapter.notifyDataSetChanged();
-                        edtMessage.setText(null);
-                        mRcvChat.scrollToPosition(messages.size() - 1);
                     }
                 });
 
@@ -275,6 +271,12 @@ public class ChatActivity extends Activity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, HomeActivity.class));
+
+    }
 
     @Subscribe
     public void getMessage(MessageChat msg) {
@@ -303,7 +305,7 @@ public class ChatActivity extends Activity {
 
     private void showMessage(String msg, String date) {
 
-        messages.add(new Message(2, msg, date, true));
+        messages.add(new Message(2, msg, date, Utils.KEY_SEND_SUCCESS));
         mAdapter.notifyDataSetChanged();
         mRcvChat.scrollToPosition(messages.size() - 1);
 

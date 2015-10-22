@@ -77,7 +77,6 @@ public class GCMNotificationIntentService extends IntentService {
 
                 if (!ChatActivity.isrunning) {
                     sendNotification(from_email, "" + data);
-                    EventBus.getDefault().post(from_email);
 
                 }
 

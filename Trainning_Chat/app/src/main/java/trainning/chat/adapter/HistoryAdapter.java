@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import trainning.chat.R;
+import trainning.chat.entity.history.HistoryItem;
 import trainning.chat.entity.history.HistoryUserData;
 
 /**
@@ -20,7 +21,7 @@ import trainning.chat.entity.history.HistoryUserData;
  */
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private Context mContext;
-    private ArrayList<HistoryUserData> users;
+    private ArrayList<HistoryItem> users;
     private LayoutInflater mInflater;
     public static OnItemClickListener itemClickListener;
     public int flag_message = 0;
@@ -30,7 +31,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         this.flag_message = flag_message;
     }
 
-    public HistoryAdapter(Context mContext, ArrayList<HistoryUserData> users) {
+    public HistoryAdapter(Context mContext, ArrayList<HistoryItem> users) {
         this.mContext = mContext;
         this.users = users;
         this.mInflater = LayoutInflater.from(mContext);
@@ -53,12 +54,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        HistoryUserData user = users.get(position);
+        HistoryItem user = users.get(position);
         holder.mTvUserName.setText(user.getEmail());
-        holder.mTvLastMessage.setText(user.getData());
+        holder.mTvLastMessage.setText(user.getMessage_last());
         Date date = null;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(user.getUpdated_at().getDate());
+            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(user.getTime());
             String newString = new SimpleDateFormat("HH:mm:ss").format(date);
 
             holder.mTvTime.setText(newString);
@@ -67,9 +68,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
 
         holder.pos = position;
-        if (flag_message > 0) {
+        if (user.isFlag_inbox()) {
             holder.tvNotifyMessage.setVisibility(View.VISIBLE);
-            holder.tvNotifyMessage.setText(flag_message + "");
+        } else {
+            holder.tvNotifyMessage.setVisibility(View.GONE);
         }
     }
 
@@ -95,6 +97,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         @Override
         public void onClick(View view) {
+
             itemClickListener.setonItemClick(view, pos);
         }
 

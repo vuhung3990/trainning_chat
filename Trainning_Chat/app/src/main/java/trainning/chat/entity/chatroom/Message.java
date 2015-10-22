@@ -9,26 +9,27 @@ public class Message {
     private int id;
     private String message;
     private String time;
-    private boolean status;
+    private int status;
     private int recent = 1;
+
 
     public Message(int id, String message) {
         this.id = id;
         this.message = message;
     }
 
-    public Message(int id, String message, String time, boolean status) {
+    public Message(int id, String message, String time, int status) {
         this.id = id;
         this.message = message;
         this.time = time;
         this.status = status;
     }
 
-    public boolean getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

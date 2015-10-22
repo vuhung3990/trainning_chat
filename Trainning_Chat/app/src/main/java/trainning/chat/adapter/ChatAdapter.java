@@ -111,8 +111,10 @@ public class ChatAdapter extends RecyclerView.Adapter {
                 ((ItemViewHolder) holder).mTvMessage.setBackgroundResource(R.drawable.bubble_a);
                 ((ItemViewHolder) holder).mTime.setText(message.getTime());
                 ((ItemViewHolder) holder).llMessage.setGravity(Gravity.RIGHT);
-                if (message.getStatus() == false) {
+                if (message.getStatus() == 0) {
                     ((ItemViewHolder) holder).mTvStatus.setText("Fail");
+                } else if (message.getStatus() == 1) {
+                    ((ItemViewHolder) holder).mTvStatus.setText("Sending...");
                 } else {
                     ((ItemViewHolder) holder).mTvStatus.setText("Success");
                 }
@@ -121,8 +123,10 @@ public class ChatAdapter extends RecyclerView.Adapter {
                 ((ItemViewHolder) holder).mTvMessage.setBackgroundResource(R.drawable.bubble_b);
                 ((ItemViewHolder) holder).mTime.setText(message.getTime());
                 ((ItemViewHolder) holder).llMessage.setGravity(Gravity.LEFT);
-                if (message.getStatus() == false) {
+                if (message.getStatus() == 0) {
                     ((ItemViewHolder) holder).mTvStatus.setText("Fail");
+                } else if (message.getStatus() == 1) {
+                    ((ItemViewHolder) holder).mTvStatus.setText("Sending...");
                 } else {
                     ((ItemViewHolder) holder).mTvStatus.setText("Success");
                 }
@@ -146,7 +150,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
         } else {
 //            position = VIEW_PROG;
-            position=VIEW_DATE;
+            position = VIEW_DATE;
         }
 
         return position;
