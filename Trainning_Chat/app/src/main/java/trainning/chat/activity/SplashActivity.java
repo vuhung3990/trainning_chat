@@ -8,34 +8,47 @@ import android.widget.Toast;
 
 import trainning.chat.gcm.GCMRegister;
 import trainning.chat.R;
+import trainning.chat.util.MySharePreferences;
 
 /**
  * Created by ASUS on 13/10/2015.
  */
 public class SplashActivity extends AppCompatActivity {
     private Context mContext;
+    private String email, token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
-
+        email = MySharePreferences.getValue(this, "email", "");
+        token = MySharePreferences.getValue(this, "token", "");
         mContext = this;
         GCMRegister register = new GCMRegister(this, new GCMRegister.registerListener() {
             @Override
             public void onSuccess(String regID) {
-                Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
-                intent.putExtra("regID", regID);
-                startActivity(intent);
-                finish();
+                if (email != "" && token != "") {
+
+                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+                    intent.putExtra("regID", regID);
+                    startActivity(intent);
+                    finish();
 //                startActivity(new Intent(SplashActivity.this, LogInActivity.class));
+                } else {
+                    Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
+                    intent.putExtra("regID", regID);
+                    startActivity(intent);
+                    finish();
+                }
             }
 
             @Override
             public void onFail() {
                 Toast.makeText(mContext, "please check your network connection and try again later.", Toast.LENGTH_LONG).show();
             }
-        });
+        }
+
+        );
         register.execute();
     }
 }

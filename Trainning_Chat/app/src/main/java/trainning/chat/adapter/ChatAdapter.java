@@ -29,6 +29,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
     private LayoutInflater mInflater;
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
+    private final int VIEW_DATE = 0;
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -96,6 +97,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
                 vh = new ProgressViewHolder(v);
                 break;
+
         }
         return vh;
     }
@@ -143,8 +145,10 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
 
         } else {
-            position = VIEW_PROG;
+//            position = VIEW_PROG;
+            position=VIEW_DATE;
         }
+
         return position;
     }
 
@@ -169,6 +173,15 @@ public class ChatAdapter extends RecyclerView.Adapter {
         public ProgressViewHolder(View v) {
             super(v);
             progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
+        }
+    }
+
+    public static class DateHolder extends RecyclerView.ViewHolder {
+        public TextView tvDate;
+
+        public DateHolder(View v) {
+            super(v);
+            tvDate = (TextView) v.findViewById(R.id.tvDate);
         }
     }
 }

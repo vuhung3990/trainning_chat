@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.gson.Gson;
 
+import de.greenrobot.event.EventBus;
 import trainning.chat.R;
 import trainning.chat.activity.ChatActivity;
 import trainning.chat.entity.chatroom.DataChat;
@@ -32,7 +33,7 @@ public class GCMNotificationIntentService extends IntentService {
      */
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
-    NotificationCompat.Builder mBuilder;
+    public static NotificationCompat.Builder mBuilder;
     public static final String TAG = "GCM NotificationIntentService";
 
     public GCMNotificationIntentService(String name) {
@@ -76,6 +77,8 @@ public class GCMNotificationIntentService extends IntentService {
 
                 if (!ChatActivity.isrunning) {
                     sendNotification(from_email, "" + data);
+                    EventBus.getDefault().post(from_email);
+
                 }
 
                 Log.i(GCMConfig.LOG_TAG, "Received: " + extras.toString());
@@ -101,8 +104,8 @@ public class GCMNotificationIntentService extends IntentService {
 //        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ChatActivity.class), 0);
 //        // Setup Notify
         mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_mail_new)
-                .setContentTitle("Tin nhắn mới")
+                .setSmallIcon(R.mipmap.msg)
+                .setContentTitle("Tin nhắn mới" + "\n" + "từ " + email)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)).setContentText(msg);
 //        // Set penddingIntent
 //        mBuilder.setContentIntent(contentIntent);

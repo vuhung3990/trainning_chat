@@ -38,10 +38,11 @@ public class GCMBroadcastReciever extends WakefulBroadcastReceiver {
                 Gson gson = new Gson();
 
                 MessageChat message = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
-                String data = message.getData();
-                Log.d("DATA", data);
+//                String data = message.getData();
+//                String date = message.getCreated_at();
 
-                EventBus.getDefault().post(data);
+//                Log.d("DATA", data);
+                EventBus.getDefault().post(message);
                 startWakefulService(context, intent.setComponent(componentName));
             }
 

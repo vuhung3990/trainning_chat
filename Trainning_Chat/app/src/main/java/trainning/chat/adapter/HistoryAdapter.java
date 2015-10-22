@@ -23,6 +23,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private ArrayList<HistoryUserData> users;
     private LayoutInflater mInflater;
     public static OnItemClickListener itemClickListener;
+    public int flag_message = 0;
+
+
+    public void setFlag_message(int flag_message) {
+        this.flag_message = flag_message;
+    }
 
     public HistoryAdapter(Context mContext, ArrayList<HistoryUserData> users) {
         this.mContext = mContext;
@@ -44,6 +50,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return holder;
     }
 
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         HistoryUserData user = users.get(position);
@@ -60,6 +67,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
 
         holder.pos = position;
+        if (flag_message > 0) {
+            holder.tvNotifyMessage.setVisibility(View.VISIBLE);
+            holder.tvNotifyMessage.setText(flag_message + "");
+        }
     }
 
     @Override
@@ -69,7 +80,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTvUserName, mTvLastMessage, mTvTime;
+        public TextView mTvUserName, mTvLastMessage, mTvTime, tvNotifyMessage;
         public int pos;
 
         public ViewHolder(View itemView) {
@@ -77,6 +88,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             mTvLastMessage = (TextView) itemView.findViewById(R.id.tvMessage_latter);
             mTvUserName = (TextView) itemView.findViewById(R.id.tvUsername);
             mTvTime = (TextView) itemView.findViewById(R.id.tvTime);
+            tvNotifyMessage = (TextView) itemView.findViewById(R.id.tvMessageMissing);
+
             itemView.setOnClickListener(this);
         }
 

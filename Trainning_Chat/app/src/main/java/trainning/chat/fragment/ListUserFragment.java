@@ -1,10 +1,12 @@
 package trainning.chat.fragment;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,7 +44,7 @@ import trainning.chat.util.Utils;
 /**
  * Created by ASUS on 10/10/2015.
  */
-public class ListUserFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
     private RecyclerView mRcvContact;
     private ArrayList<ContactUser> users;
     private ContactAdapter mAdapter;
@@ -59,6 +61,7 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
     String token;
     private boolean addNewFr = false;
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +70,11 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
         tvAddFreind = (TextView) view.findViewById(R.id.tvAddFreind);
         mSearchView = (SearchView) view.findViewById(R.id.searchView);
         mSearchView.setOnQueryTextListener(this);
+//        mSearchView.onActionViewExpanded();
+//        mSearchView.onActionViewCollapsed();
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+//        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setOnRefreshListener(this);
         tvAddFreind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,8 +100,9 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
             @Override
             public boolean onClose() {
                 search = false;
+                users.clear();
                 if (!addNewFr) {
-                    users.clear();
+
                     users.addAll(saveListUserForSearchView);
                     mAdapter.notifyDataSetChanged();
                 } else {
@@ -102,7 +110,7 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
                     RequestUtils.getContactList(myEmail, new RequestUtils.contactCallback() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                            getContact(myEmail);
                         }
 
                         @Override
@@ -120,6 +128,11 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("CONTACT-RESUME", "On Resume");
+    }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
@@ -166,20 +179,26 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 //                Log.d("CONTACT-LIST", responseString);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Log.d("CONTACT-LIST", responseString);
+                swipeRefreshLayout.setRefreshing(false);
                 if (responseString != null) {
                     Gson gson = new Gson();
                     Contacts contact = gson.fromJson(responseString, Contacts.class);
+                    saveListUserForSearchView.clear();
                     users = contact.getData();
+
                     saveListUserForSearchView.addAll(users);
+
+                    Log.d("CONTACT-SIZE", users.size() + "");
                     mAdapter = new ContactAdapter(getActivity(), users, new ContactAdapter.OnItemClickListener() {
                         @Override
                         public void setOnItemClick(int position) {
-
+                            Log.d("CONTACT-POSSTION", position + "");
                             Intent intent = new Intent(getActivity(), ChatActivity.class);
                             intent.putExtra("to", users.get(position).getEmail());
                             startActivity(intent);
@@ -208,6 +227,7 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
 
                                                 @Override
                                                 public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
                                                     addNewFr = true;
                                                     Log.d("Add Friend", responseString);
                                                     mDialog.dismiss();
@@ -243,4 +263,18 @@ public class ListUserFragment extends Fragment implements SearchView.OnQueryText
         });
 
     }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        });
+        users.clear();
+        mAdapter.notifyDataSetChanged();
+        getContact(myEmail);
+    }
+
 }

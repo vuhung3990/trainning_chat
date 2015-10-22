@@ -1,6 +1,8 @@
 package trainning.chat.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -32,6 +36,7 @@ import trainning.chat.entity.chatroom.DataChat;
 import trainning.chat.entity.chatroom.Message;
 import trainning.chat.entity.chatroom.MessageChat;
 import trainning.chat.entity.chatroom.OnLoadMoreListener;
+import trainning.chat.gcm.GCMNotificationIntentService;
 import trainning.chat.util.MySharePreferences;
 import trainning.chat.util.Utils;
 
@@ -62,6 +67,10 @@ public class ChatActivity extends Activity {
     private int loadlimit;
     private android.os.Handler mHandler = new android.os.Handler();
     private int k = 0;
+    private TextView tvTitle;
+    public static final int NOTIFICATION_ID = 1;
+    private NotificationManager mNotificationManager;
+    private String message_input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +83,20 @@ public class ChatActivity extends Activity {
 //        layoutManager.setStackFromEnd(true);
         mRcvChat.setLayoutManager(layoutManager);
         btnSend = (Button) findViewById(R.id.btnSend);
+        tvTitle = (TextView) findViewById(R.id.tvTitle);
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         emailfrom = MySharePreferences.getValue(this, "email", "");
 //        this.mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
 //        reg_ID = mSharedPreferences.getString(GCMConfig.PREFERENCE_KEY_REG_ID, null);
         messages = new ArrayList<>();
+        mAdapter = new ChatAdapter(messages, mRcvChat);
+        mRcvChat.setAdapter(mAdapter);
         Bundle bundle = getIntent().getExtras();
         final String to = bundle.getString("to");
+        tvTitle.setText("Chat with: " + to);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(NOTIFICATION_ID);
+
         client = new AsyncHttpClient();
         params = new RequestParams();
         params.put("from", emailfrom);
@@ -117,22 +133,24 @@ public class ChatActivity extends Activity {
                             messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), true));
                             Log.d("CHAT-DATA", message.getUpdated_at());
                         }
+                        Collections.reverse(messages);
+
+
                         Log.d("messages", messages.size() + "");
-//                        mAdapter = new ChatAdapter(messages, mRcvChat);
-//                        mRcvChat.setAdapter(mAdapter);
-//                        mRcvChat.scrollToPosition(messages.size() - 1);
+                        mAdapter.notifyDataSetChanged();
+                        mRcvChat.scrollToPosition(messages.size() - 1);
 
-                        loadDataFirst();
-                        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-                            @Override
-                            public void onLoadMore() {
-//                                Log.d("LOAD MORE", "touch scroll");
-//                                loadlimit = MySharePreferences.getValue(getApplicationContext(), "limited", 0);
-//                                loadMoreData(loadlimit + 10);
-                                loadMoreDemo();
-
-                            }
-                        });
+//                        loadDataFirst();
+//                        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+//                            @Override
+//                            public void onLoadMore() {
+////                                Log.d("LOAD MORE", "touch scroll");
+////                                loadlimit = MySharePreferences.getValue(getApplicationContext(), "limited", 0);
+////                                loadMoreData(loadlimit + 10);
+//                                loadMoreDemo();
+//
+//                            }
+//                        });
 //                        for (int i = 0; i < messages.size() - 1; i++) {
 //                            Log.d("TIME---", messages.get(i).getTime());
 //
@@ -186,46 +204,50 @@ public class ChatActivity extends Activity {
                 token = MySharePreferences.getValue(ChatActivity.this, "token", "");
 
                 Log.d("ChatAc TOKEN SEND", token);
+                message_input = edtMessage.getText().toString();
                 client = new AsyncHttpClient();
                 params = new RequestParams();
                 params.put("from", emailfrom);
                 params.put("to", to);
                 params.put("token", token);
                 params.put("type", "text");
-                params.put("data", edtMessage.getText().toString());
+                params.put("data", message_input);
 
 
                 Log.d("ChatActivity Message", edtMessage.getText() + "");
-
 
 //                params.put("reg_id", "APA91bFx7W0vQOC2gHoWkt9IZDXYj7gbvKxAs19FacwjYQkPt1FWYMjRCZn6BbXqfg5VBQjOzWkvRUvIeOqcA1EKsq7_JAmGMabIySw2YeAvPVjLkbVWZJ0");
                 client.post(Utils.API_GCM_CHAT, params, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         Log.d("ChatActivity chatstatus", statusCode + "__" + responseString);
+                        if (statusCode == 406) {
+                            Toast.makeText(getApplicationContext(), "Send message fail , Acount not activated", Toast.LENGTH_SHORT).show();
+                        }
+
                         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         dateFormatter.setLenient(false);
                         Date today = new Date();
                         String s = dateFormatter.format(today);
-                        messageFirst.add(new Message(1, edtMessage.getText().toString(), s, false));
+                        messages.add(new Message(1, edtMessage.getText().toString(), s, false));
                         mAdapter.notifyDataSetChanged();
                         edtMessage.setText(null);
-                        mRcvChat.scrollToPosition(messageFirst.size() - 1);
+                        mRcvChat.scrollToPosition(messages.size() - 1);
                     }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        Log.d("ChatActivity chatstatus", "post success");
+                        Log.d("ChatActivity chatstatus", responseString);
                         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         dateFormatter.setLenient(false);
                         Date today = new Date();
                         String s = dateFormatter.format(today);
 //                        Log.d("CHAT TIME", s);
 
-                        messageFirst.add(new Message(1, edtMessage.getText().toString(), s, true));
+                        messages.add(new Message(1, edtMessage.getText().toString(), s, true));
                         mAdapter.notifyDataSetChanged();
                         edtMessage.setText(null);
-                        mRcvChat.scrollToPosition(messageFirst.size() - 1);
+                        mRcvChat.scrollToPosition(messages.size() - 1);
                     }
                 });
 
@@ -255,10 +277,10 @@ public class ChatActivity extends Activity {
 
 
     @Subscribe
-    public void getMessage(String msg) {
+    public void getMessage(MessageChat msg) {
         if (msg != null) {
-            showMessage(msg);
-            Log.d("even bus msg", msg);
+            showMessage(msg.getData().toString(), msg.getCreated_at().toString());
+//            Log.d("even bus msg", msg);
         }
 
     }
@@ -279,9 +301,9 @@ public class ChatActivity extends Activity {
         super.onPause();
     }
 
-    private void showMessage(String msg) {
+    private void showMessage(String msg, String date) {
 
-        messages.add(new Message(2, msg));
+        messages.add(new Message(2, msg, date, true));
         mAdapter.notifyDataSetChanged();
         mRcvChat.scrollToPosition(messages.size() - 1);
 
@@ -348,15 +370,16 @@ public class ChatActivity extends Activity {
 
         mRcvChat.setAdapter(mAdapter);
         mRcvChat.scrollToPosition(messageFirst.size() - 1);
-//        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore() {
-//                Log.d("LOAD MORE", "touch scroll");
-//
-//                loadMoreData(loadlimit);
-//
-//            }
-//        });
+        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                Log.d("LOAD MORE", "touch scroll");
+//                                loadlimit = MySharePreferences.getValue(getApplicationContext(), "limited", 0);
+//                                loadMoreData(loadlimit + 10);
+                loadMoreDemo();
+
+            }
+        });
     }
 
     public void loadMoreDemo() {

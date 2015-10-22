@@ -5,12 +5,22 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:singleLine="true"
+        android:gravity="center"
+        android:text="aaa"
+        android:textColor="@color/btn_sigin"
+        android:textSize="20dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/tbChat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
+        android:layout_marginTop="40dp"
         android:orientation="vertical">
 
     </android.support.v7.widget.RecyclerView>

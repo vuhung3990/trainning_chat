@@ -10,6 +10,7 @@ public class Message {
     private String message;
     private String time;
     private boolean status;
+    private int recent = 1;
 
     public Message(int id, String message) {
         this.id = id;
