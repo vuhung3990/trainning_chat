@@ -111,6 +111,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
                 ((ItemViewHolder) holder).mTvMessage.setBackgroundResource(R.drawable.bubble_a);
                 ((ItemViewHolder) holder).mTime.setText(message.getTime());
                 ((ItemViewHolder) holder).llMessage.setGravity(Gravity.RIGHT);
+                ((ItemViewHolder) holder).mTvStatus.setVisibility(View.VISIBLE);
                 if (message.getStatus() == 0) {
                     ((ItemViewHolder) holder).mTvStatus.setText("Fail");
                 } else if (message.getStatus() == 1) {
@@ -123,13 +124,14 @@ public class ChatAdapter extends RecyclerView.Adapter {
                 ((ItemViewHolder) holder).mTvMessage.setBackgroundResource(R.drawable.bubble_b);
                 ((ItemViewHolder) holder).mTime.setText(message.getTime());
                 ((ItemViewHolder) holder).llMessage.setGravity(Gravity.LEFT);
-                if (message.getStatus() == 0) {
-                    ((ItemViewHolder) holder).mTvStatus.setText("Fail");
-                } else if (message.getStatus() == 1) {
-                    ((ItemViewHolder) holder).mTvStatus.setText("Sending...");
-                } else {
-                    ((ItemViewHolder) holder).mTvStatus.setText("Success");
-                }
+                ((ItemViewHolder) holder).mTvStatus.setVisibility(View.GONE);
+//                if (message.getStatus() == 0) {
+//                    ((ItemViewHolder) holder).mTvStatus.setText("Fail");
+//                } else if (message.getStatus() == 1) {
+//                    ((ItemViewHolder) holder).mTvStatus.setText("Sending...");
+//                } else {
+//                    ((ItemViewHolder) holder).mTvStatus.setText("Success");
+//                }
             }
         } else {
             ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);

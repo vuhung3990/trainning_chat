@@ -123,23 +123,32 @@ public class RegisterActivity extends AppCompatActivity {
                                                        RequestUtils.register(email, userName, password, new RequestUtils.registerCallback() {
                                                            @Override
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                                               Log.d("STATUSTCODE", statusCode + "");
-                                                               Toast.makeText(getApplicationContext(), "register not success, please check network", Toast.LENGTH_SHORT).show();
-                                                               mDialog.dismiss();
+                                                               if (statusCode == 400) {
+                                                                   mDialog.dismiss();
+                                                                   Toast.makeText(getApplicationContext(), "register not success, Email already exists", Toast.LENGTH_LONG).show();
+
+                                                               } else {
+                                                                   mDialog.dismiss();
+                                                                   Toast.makeText(getApplicationContext(), "register not success, please check network", Toast.LENGTH_LONG).show();
+
+                                                               }
+
+                                                               Log.d("STATUSTCODE", statusCode + "" + responseString);
+
 
                                                            }
 
                                                            @Override
                                                            public void onSuccess(int statusCode, Header[] headers, String responseString) {
                                                                mDialog.dismiss();
-                                                               Toast.makeText(getApplicationContext(), "register success", Toast.LENGTH_SHORT).show();
+                                                               Toast.makeText(getApplicationContext(), "register success", Toast.LENGTH_LONG).show();
                                                                finish();
                                                            }
                                                        });
 
 
                                                    } else {
-                                                       Toast.makeText(getApplicationContext(), "password not match ", Toast.LENGTH_SHORT).show();
+                                                       Toast.makeText(getApplicationContext(), "password not match ", Toast.LENGTH_LONG).show();
                                                    }
 
                                                } else

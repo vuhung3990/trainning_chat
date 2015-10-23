@@ -1,5 +1,10 @@
 package trainning.chat.activity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,15 +12,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 import trainning.chat.R;
 import trainning.chat.adapter.ViewPagerAdapter;
 import trainning.chat.customview.SlidingTabLayout;
@@ -23,6 +32,8 @@ import trainning.chat.entity.TabItem;
 import trainning.chat.fragment.HistoryFragment;
 import trainning.chat.fragment.ListUserFragment;
 import trainning.chat.fragment.SettingFragment;
+import trainning.chat.gcm.GCMConfig;
+import trainning.chat.util.MySharePreferences;
 
 /**
  * Created by ASUS on 10/10/2015.
@@ -34,7 +45,7 @@ public class HomeActivity extends FragmentActivity {
     private static SlidingTabLayout mSlidingTabLayout;
     private String[] titles = {"Message", "Contact", "Setting"};
     private Fragment[] fragments = {new HistoryFragment(), new ListUserFragment(), new SettingFragment()};
-
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +64,7 @@ public class HomeActivity extends FragmentActivity {
             }
         });
         mSlidingTabLayout.setViewPager(viewPager);
-
+        mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     public void getTab() {
@@ -66,6 +77,27 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
+    @Subscribe
+    public void getLogout(String logout) {
+        if (logout != null) {
+            closeApp();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        EventBus.getDefault().register(this);
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,5 +111,16 @@ public class HomeActivity extends FragmentActivity {
         return super.onCreateOptionsMenu(menu);
 
 
+    }
+
+    public void closeApp() {
+        Toast.makeText(getApplicationContext(), "App Closed, Account was logged by other devices ", Toast.LENGTH_LONG).show();
+        MySharePreferences.setValue(this, "email", null);
+        MySharePreferences.setValue(this, "token", null);
+        MySharePreferences.setValue(this, "checked", false);
+        mSharedPreferences.edit().putString(GCMConfig.PREFERENCE_KEY_REG_ID, null).commit();
+
+        finish();
+        startActivity(new Intent(this, SplashActivity.class));
     }
 }

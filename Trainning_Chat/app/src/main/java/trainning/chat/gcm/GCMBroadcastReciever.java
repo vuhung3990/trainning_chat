@@ -1,8 +1,10 @@
 package trainning.chat.gcm;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.WakefulBroadcastReceiver;
@@ -11,16 +13,20 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
+import trainning.chat.activity.HomeActivity;
+import trainning.chat.activity.LogInActivity;
 import trainning.chat.entity.chatroom.DataChat;
 import trainning.chat.entity.chatroom.MessageChat;
+import trainning.chat.util.MySharePreferences;
 
 /**
  * Created by ASUS on 06/08/2015.
  */
 public class GCMBroadcastReciever extends WakefulBroadcastReceiver {
+    HomeActivity main;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         // Create new component identifier
 //        Bundle extras = intent.getExtras();
 //        Intent msgrcv = new Intent("Msg");
@@ -31,9 +37,11 @@ public class GCMBroadcastReciever extends WakefulBroadcastReceiver {
         ComponentName componentName = new ComponentName(context.getPackageName(), GCMNotificationIntentService.class.getName());
 
 //        Log.d("DSDSD", intent.getStringExtra("data"));
+
         if (intent.getStringExtra("data") != null) {
             if (intent.getStringExtra("data").equals("[\"force logout\"]")) {
                 Log.d("LOG OUT", "LOG OUT");
+                EventBus.getDefault().post(intent.getStringExtra("data"));
             } else {
                 Gson gson = new Gson();
 

@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import cz.msebera.android.httpclient.Header;
 import trainning.chat.database.DatabaseHandler;
 import trainning.chat.gcm.GCMConfig;
+import trainning.chat.gcm.GCMRegister;
 import trainning.chat.util.MySharePreferences;
 import trainning.chat.R;
 import trainning.chat.entity.ResponseString;
@@ -97,7 +98,7 @@ public class LogInActivity extends AppCompatActivity {
             String token = MySharePreferences.getValue(this, "token", "");
 //            String pass = MySharePreferences.getValue(this, "password", "");
             mEdtEmail.setText(email);
-            mEdtpass.setText(token);
+//            mEdtpass.setText(token);
 
             if (email.isEmpty() || token.isEmpty()) {
                 return;
@@ -173,13 +174,12 @@ public class LogInActivity extends AppCompatActivity {
                     RequestUtils.logIn(email, password, regID, new RequestUtils.logInCallback() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            Log.d("STATUS CODE_Fail", statusCode + "");
-                            Log.d("RESPONSE STRING", responseString + "");
+                            Log.d("STATUS CODE_Fail", statusCode + "" + responseString);
                             mDialog.dismiss();
                             if (statusCode == 400) {
-                                Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "LogIn Fail,token is wrong account was logged by other devices", Toast.LENGTH_SHORT).show();
                             } else if (statusCode == 500) {
-                                Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "LogIn Fail, please check network", Toast.LENGTH_SHORT).show();
                             } else if (statusCode == 404) {
                                 Toast.makeText(getApplicationContext(), "Email or Password is wrong", Toast.LENGTH_SHORT).show();
                             }
@@ -187,18 +187,17 @@ public class LogInActivity extends AppCompatActivity {
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                            Log.d("STATUS CODE", statusCode + "");
-                            Log.d("RESPONSE STRING", responseString + "");
+                            Log.d("STATUS CODE", statusCode + "" + responseString);
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             mDialog.dismiss();
                             Gson gson = new Gson();
                             ResponseString st = gson.fromJson(responseString, ResponseString.class);
                             String token = st.getToken();
                             MySharePreferences.setValue(getApplicationContext(), "email", email);
-                            if (getAutoLogIn()) {
-                                MySharePreferences.setValue(getApplicationContext(), "token", token);
+//                            if (getAutoLogIn()) {
+                            MySharePreferences.setValue(getApplicationContext(), "token", token);
 
-                            }
+//                            }
 
 //                            MySharePreferences.setValue(getApplicationContext(), "password", password);
                             Log.d("TOKEN LOGIN", token + "");
@@ -247,7 +246,13 @@ public class LogInActivity extends AppCompatActivity {
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Log.d("LogIn Fail", statusCode + "---" + responseString);
                     mDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "LogIn Fail", Toast.LENGTH_SHORT).show();
+                    if (statusCode == 400) {
+                        Toast.makeText(getApplicationContext(), "LogIn Fail,token is wrong account was logged by other devices", Toast.LENGTH_SHORT).show();
+                    } else if (statusCode == 500) {
+                        Toast.makeText(getApplicationContext(), "LogIn Fail, please check network", Toast.LENGTH_SHORT).show();
+                    } else if (statusCode == 404) {
+                        Toast.makeText(getApplicationContext(), "Email or Password is wrong", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override
@@ -280,4 +285,6 @@ public class LogInActivity extends AppCompatActivity {
     private Boolean getAutoLogIn() {
         return MySharePreferences.getValue(getApplicationContext(), "checked", false);
     }
+
+
 }

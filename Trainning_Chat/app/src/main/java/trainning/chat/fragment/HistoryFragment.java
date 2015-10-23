@@ -46,7 +46,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private HistoryAdapter mAdapter;
     ArrayList<HistoryUserData> datas;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ArrayList<HistoryItem> users = new ArrayList<>();
+    private ArrayList<HistoryItem> users;
     private MessageChat message;
 
     public void setMessage(MessageChat message) {
@@ -68,7 +68,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         mRcvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
 //        users = new ArrayList<>();
-
+        users = new ArrayList<>();
         getHistory();
         return view;
 
@@ -76,8 +76,8 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Subscribe
     public void getMessage(MessageChat msg) {
+        setMessage(msg);
         if (msg != null) {
-            setMessage(msg);
             showMessageNew(msg);
         }
 
@@ -122,23 +122,32 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     Log.d("History list DATA", data.getEmail() + "");
                 }
 
-                mAdapter = new HistoryAdapter(getContext(), users);
+                mAdapter = new HistoryAdapter(getActivity(), users);
                 mRcvUser.setAdapter(mAdapter);
+//                Log.d("MESSAGE", getMessage().getFrom() + "");
+//                Log.d("USER", users.get(position).getEmail() + "");
+
                 mAdapter.setItemClickListener(new HistoryAdapter.OnItemClickListener() {
                     @Override
                     public void setonItemClick(View view, int position) {
-                        if (users.get(position).getEmail().equals(getMessage().getFrom())) {
-                            users.get(position).setFlag_inbox(false);
-                            Log.d("AAAAAA", "AAAA");
-                            mAdapter.notifyDataSetChanged();
+                        Log.d("POSSITION", position + "");
+//                        Log.d("MESSAGE", getMessage().getFrom() + "");
+//                        Log.d("USER", users.get(position).getEmail() + "");
+                        if (getMessage() != null) {
+                            if (users.get(position).getEmail().equals(getMessage().getFrom())) {
+                                users.get(position).setFlag_inbox(false);
 
+                                mAdapter.notifyDataSetChanged();
 
-
+                                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                                intent.putExtra("to", users.get(position).getEmail());
+                                startActivity(intent);
+                            }
+                        } else {
+                            Intent intent = new Intent(getActivity(), ChatActivity.class);
+                            intent.putExtra("to", users.get(position).getEmail());
+                            startActivity(intent);
                         }
-                        Intent intent = new Intent(getActivity(), ChatActivity.class);
-                        intent.putExtra("to", datas.get(position).getEmail());
-                        startActivity(intent);
-
                     }
 
                 });
