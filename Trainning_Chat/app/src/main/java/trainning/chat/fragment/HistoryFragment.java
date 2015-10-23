@@ -48,6 +48,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArrayList<HistoryItem> users;
     private MessageChat message;
+    String email;
 
     public void setMessage(MessageChat message) {
         this.message = message;
@@ -65,10 +66,12 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRcvUser = (RecyclerView) view.findViewById(R.id.rcvHistory);
-
+        email = MySharePreferences.getValue(getActivity(), "email", "");
         mRcvUser.setLayoutManager(new LinearLayoutManager(getActivity()));
 //        users = new ArrayList<>();
         users = new ArrayList<>();
+        mAdapter = new HistoryAdapter(getActivity(), users);
+        mRcvUser.setAdapter(mAdapter);
         getHistory();
         return view;
 
@@ -77,7 +80,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Subscribe
     public void getMessage(MessageChat msg) {
         setMessage(msg);
-        if (msg != null) {
+        if (msg != null && msg.getTo() != null && msg.getTo().equals(email)) {
             showMessageNew(msg);
         }
 
@@ -100,7 +103,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     public void getHistory() {
 
-        String email = MySharePreferences.getValue(getActivity(), "email", "");
+
         RequestUtils.getHistoryList(email, new RequestUtils.historyCallback() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -121,9 +124,9 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                     Log.d("History list DATA", data.getEmail() + "");
                 }
-
-                mAdapter = new HistoryAdapter(getActivity(), users);
-                mRcvUser.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+//                mAdapter = new HistoryAdapter(getActivity(), users);
+//                mRcvUser.setAdapter(mAdapter);
 //                Log.d("MESSAGE", getMessage().getFrom() + "");
 //                Log.d("USER", users.get(position).getEmail() + "");
 

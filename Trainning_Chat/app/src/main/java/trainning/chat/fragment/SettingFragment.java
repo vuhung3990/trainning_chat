@@ -38,11 +38,8 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                MySharePreferences.setValue(getActivity(), "email", null);
-                MySharePreferences.setValue(getActivity(), "token", null);
-                MySharePreferences.setValue(getActivity(), "checked", false);
-                mSharedPreferences.edit().putString(GCMConfig.PREFERENCE_KEY_REG_ID, null).commit();
-                Log.d("REG_ID", mSharedPreferences.getString(GCMConfig.PREFERENCE_KEY_REG_ID, null)+"");
+
+                Log.d("REG_ID", mSharedPreferences.getString(GCMConfig.PREFERENCE_KEY_REG_ID, null) + "");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setMessage("Are you sure want logOut?");
 
@@ -50,6 +47,10 @@ public class SettingFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         arg0.cancel();
+                        MySharePreferences.setValue(getActivity(), "email", null);
+                        MySharePreferences.setValue(getActivity(), "token", null);
+                        MySharePreferences.setValue(getActivity(), "checked", false);
+                        mSharedPreferences.edit().putString(GCMConfig.PREFERENCE_KEY_REG_ID, null).commit();
                         getActivity().finish();
                         startActivity(new Intent(getActivity(), SplashActivity.class));
                     }

@@ -4,6 +4,9 @@ package trainning.chat.entity.chatroom;
  * Created by NGUYEN on 10/17/2015.
  */
 public class MessageChat {
+    private String action;
+    private String email;
+
     private String from;
     private String to;
     private String type;
@@ -11,6 +14,37 @@ public class MessageChat {
     private String updated_at;
     private String created_at;
     private int id;
+
+    @Override
+    public String toString() {
+        return "MessageChat{" +
+                "action='" + action + '\'' +
+                ", email='" + email + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", type='" + type + '\'' +
+                ", data='" + data + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", id=" + id +
+                '}';
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public String getFrom() {
         return from;

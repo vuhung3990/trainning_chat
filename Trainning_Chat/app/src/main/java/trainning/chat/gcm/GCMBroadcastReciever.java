@@ -39,20 +39,30 @@ public class GCMBroadcastReciever extends WakefulBroadcastReceiver {
 //        Log.d("DSDSD", intent.getStringExtra("data"));
 
         if (intent.getStringExtra("data") != null) {
-            if (intent.getStringExtra("data").equals("[\"force logout\"]")) {
-                Log.d("LOG OUT", "LOG OUT");
-                EventBus.getDefault().post(intent.getStringExtra("data"));
-            } else {
-                Gson gson = new Gson();
+//            if (intent.getStringExtra("data").equals("[\"force logout\"]")) {
+//                Log.d("LOG OUT", "LOG OUT");
+//                EventBus.getDefault().post(intent.getStringExtra("data"));
+//            } else {
+            Gson gson = new Gson();
 
-                MessageChat message = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
+            MessageChat message = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
+            Log.d("wwww", "aaa:" + message.toString());
+//            Log.d("wwww", "aaa:" + message.getAction());
 //                String data = message.getData();
 //                String date = message.getCreated_at();
 
 //                Log.d("DATA", data);
-                EventBus.getDefault().post(message);
+//            if (message.getAction() != null) {
+//                EventBus.getDefault().post(intent.getStringExtra("data"));
+//            } else {
+            EventBus.getDefault().post(message);
+//            }
+
+            if (message != null && message.getAction() == null) {
                 startWakefulService(context, intent.setComponent(componentName));
             }
+
+//            }
 
         }
 

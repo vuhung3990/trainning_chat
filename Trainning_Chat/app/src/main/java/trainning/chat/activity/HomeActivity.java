@@ -29,6 +29,7 @@ import trainning.chat.R;
 import trainning.chat.adapter.ViewPagerAdapter;
 import trainning.chat.customview.SlidingTabLayout;
 import trainning.chat.entity.TabItem;
+import trainning.chat.entity.chatroom.MessageChat;
 import trainning.chat.fragment.HistoryFragment;
 import trainning.chat.fragment.ListUserFragment;
 import trainning.chat.fragment.SettingFragment;
@@ -46,12 +47,14 @@ public class HomeActivity extends FragmentActivity {
     private String[] titles = {"Message", "Contact", "Setting"};
     private Fragment[] fragments = {new HistoryFragment(), new ListUserFragment(), new SettingFragment()};
     private SharedPreferences mSharedPreferences;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
         viewPager = (ViewPager) findViewById(R.id.pager);
+        email = MySharePreferences.getValue(this, "email", "");
         getTab();
         pagerAdapter = new ViewPagerAdapter(this.getSupportFragmentManager(), tabItems);
         viewPager.setAdapter(pagerAdapter);
@@ -78,8 +81,8 @@ public class HomeActivity extends FragmentActivity {
     }
 
     @Subscribe
-    public void getLogout(String logout) {
-        if (logout != null) {
+    public void getLogout(MessageChat msg) {
+        if (msg != null && msg.getAction() != null && msg.getEmail().equals(email)) {
             closeApp();
         }
 

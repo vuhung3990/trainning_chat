@@ -15,19 +15,18 @@ import trainning.chat.util.MySharePreferences;
  */
 public class SplashActivity extends AppCompatActivity {
     private Context mContext;
-    private String email, token;
+    private boolean checkautoLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
-        email = MySharePreferences.getValue(this, "email", "");
-        token = MySharePreferences.getValue(this, "token", "");
+        checkautoLogin = MySharePreferences.getValue(this, "checked", false);
         mContext = this;
         GCMRegister register = new GCMRegister(this, new GCMRegister.registerListener() {
             @Override
             public void onSuccess(String regID) {
-                if (email != "" && token != "") {
+                if (checkautoLogin == true) {
 
                     Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
                     intent.putExtra("regID", regID);

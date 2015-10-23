@@ -71,7 +71,7 @@ public class GCMNotificationIntentService extends IntentService {
 //                messReceive = (String) extras.get("data");
                 Gson gson = new Gson();
                 MessageChat message = gson.fromJson(intent.getStringExtra("data"), MessageChat.class);
-                Log.d("NotifiService Data", message.getData());
+//                Log.d("NotifiService Data", message.getData());
                 String data = message.getData();
                 from_email = message.getFrom();
 

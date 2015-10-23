@@ -37,6 +37,7 @@ import trainning.chat.entity.chatroom.DataChat;
 import trainning.chat.entity.chatroom.Message;
 import trainning.chat.entity.chatroom.MessageChat;
 import trainning.chat.entity.chatroom.OnLoadMoreListener;
+import trainning.chat.gcm.GCMConfig;
 import trainning.chat.gcm.GCMNotificationIntentService;
 import trainning.chat.util.MySharePreferences;
 import trainning.chat.util.Utils;
@@ -280,9 +281,12 @@ public class ChatActivity extends Activity {
 
     @Subscribe
     public void getMessage(MessageChat msg) {
-        if (msg != null) {
+
+        if (msg != null && msg.getTo().equals(emailfrom)) {
             showMessage(msg.getData().toString(), msg.getCreated_at().toString());
 //            Log.d("even bus msg", msg);
+        } else if (msg != null && msg.getAction() != null && msg.getEmail().equals(emailfrom)) {
+            closeApp();
         }
 
     }
@@ -481,5 +485,16 @@ public class ChatActivity extends Activity {
 //            }
 //        });
 
+    }
+
+    public void closeApp() {
+        Toast.makeText(getApplicationContext(), "App Closed, Account was logged by other devices ", Toast.LENGTH_LONG).show();
+        MySharePreferences.setValue(this, "email", null);
+        MySharePreferences.setValue(this, "token", null);
+        MySharePreferences.setValue(this, "checked", false);
+        mSharedPreferences.edit().putString(GCMConfig.PREFERENCE_KEY_REG_ID, null).commit();
+
+        finish();
+        startActivity(new Intent(this, SplashActivity.class));
     }
 }
