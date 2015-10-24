@@ -9,8 +9,8 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:singleLine="true"
         android:gravity="center"
+        android:singleLine="true"
         android:text="aaa"
         android:textColor="@color/btn_sigin"
         android:textSize="20dp" />
@@ -27,22 +27,23 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:text="Send" />
 
         <EditText
             android:id="@+id/edtMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/btnSend" />
 
 

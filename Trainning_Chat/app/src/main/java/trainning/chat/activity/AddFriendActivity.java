@@ -89,14 +89,14 @@ public class AddFriendActivity extends Activity {
                     RequestUtils.addFriend(email, token, edtEmail.getText().toString(), new RequestUtils.addFriendCallback() {
                         @Override
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            Log.d("Add Friend", responseString);
+                            Log.d("Add Friend", responseString+"");
                             mDialog.dismiss();
                             Toast.makeText(AddFriendActivity.this, "Add Fail, Email had in contact or not exist", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                            Log.d("Add Friend", responseString);
+                            Log.d("Add Friend", responseString+"");
                             mDialog.dismiss();
                             Toast.makeText(AddFriendActivity.this, "Add Success", Toast.LENGTH_SHORT).show();
                             finish();

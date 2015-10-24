@@ -151,13 +151,13 @@ public class RequestUtils {
 
     }
 
-    public static void unFriend(String email, String token, String emailFriend, final unFriendCallback unFriendCallback) {
+    public static void unFriend(String email, String emailFriend, String token, final unFriendCallback unFriendCallback) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("owner", email);
         params.put("friend", emailFriend);
         params.put("token", token);
-        client.post(Utils.API_UN_FRIEND, params, new TextHttpResponseHandler() {
+        client.delete(Utils.API_UN_FRIEND, params, new TextHttpResponseHandler() {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

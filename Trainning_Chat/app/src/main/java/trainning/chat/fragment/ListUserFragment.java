@@ -261,8 +261,11 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                     public void onClick(DialogInterface arg0, int arg1) {
                                         email = MySharePreferences.getValue(getActivity(), "email", "");
                                         token = MySharePreferences.getValue(getActivity(), "token", "");
+                                        Log.d("Un Friend", "Email" + email + "");
+                                        Log.d("Un Friend", "token" + token + "");
+                                        Log.d("Un Friend", "Friend" + users.get(position).getEmail() + "");
                                         mDialog.show();
-                                        RequestUtils.unFriend(email, token, users.get(position).getEmail(), new RequestUtils.unFriendCallback() {
+                                        RequestUtils.unFriend(email, users.get(position).getEmail(), token, new RequestUtils.unFriendCallback() {
                                             @Override
                                             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                                 Log.d("Un Friend", statusCode + "--------" + responseString + "");
@@ -272,8 +275,6 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-
-                                                addNewFr = true;
                                                 Log.d("Un Friend", responseString + "");
                                                 mDialog.dismiss();
                                                 Toast.makeText(getActivity(), "UnFriend Success", Toast.LENGTH_LONG).show();
