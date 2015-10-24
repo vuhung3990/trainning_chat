@@ -2,6 +2,8 @@ package trainning.chat.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -26,28 +28,41 @@ public class SplashActivity extends AppCompatActivity {
         GCMRegister register = new GCMRegister(this, new GCMRegister.registerListener() {
             @Override
             public void onSuccess(String regID) {
-                if (checkautoLogin == true) {
+                if (isNetworkAvailable()) {
+                    if (checkautoLogin == true) {
 
-                    Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-                    intent.putExtra("regID", regID);
-                    startActivity(intent);
-                    finish();
+                        Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+                        intent.putExtra("regID", regID);
+                        startActivity(intent);
+                        finish();
 //                startActivity(new Intent(SplashActivity.this, LogInActivity.class));
+                    } else {
+                        Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
+                        intent.putExtra("regID", regID);
+                        startActivity(intent);
+                        finish();
+                    }
                 } else {
-                    Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
-                    intent.putExtra("regID", regID);
-                    startActivity(intent);
-                    finish();
+                    Toast.makeText(mContext, "Not connected please check your network connection and try again later.", Toast.LENGTH_LONG).show();
+
                 }
             }
 
             @Override
             public void onFail() {
-                Toast.makeText(mContext, "please check your network connection and try again later.", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Not connected please check your network connection and try again later.", Toast.LENGTH_LONG).show();
             }
         }
 
         );
         register.execute();
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 }

@@ -2,6 +2,7 @@ package trainning.chat.activity;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,6 +74,7 @@ public class ChatActivity extends Activity {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
     private String message_input;
+    private ProgressDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +90,15 @@ public class ChatActivity extends Activity {
         tvTitle = (TextView) findViewById(R.id.tvTitle);
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         emailfrom = MySharePreferences.getValue(this, "email", "");
-//        this.mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        this.mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
 //        reg_ID = mSharedPreferences.getString(GCMConfig.PREFERENCE_KEY_REG_ID, null);
         messages = new ArrayList<>();
         mAdapter = new ChatAdapter(messageFirst, mRcvChat);
         mRcvChat.setAdapter(mAdapter);
+
+        mDialog = new ProgressDialog(this);
+        mDialog.show();
+
         Bundle bundle = getIntent().getExtras();
         final String to = bundle.getString("to");
         tvTitle.setText("Chat with: " + to);
@@ -108,7 +114,8 @@ public class ChatActivity extends Activity {
         client.get(Utils.API_CHAT_ROOM, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
+                mDialog.dismiss();
+                Toast.makeText(ChatActivity.this, "Load message fail, please check message", Toast.LENGTH_LONG).show();
                 if (responseString != null)
                     Log.d("Send message Fail", responseString + "");
             }
@@ -116,7 +123,7 @@ public class ChatActivity extends Activity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Log.d("Message History", responseString + "");
-
+                mDialog.dismiss();
                 if (responseString != null) {
                     Gson gson = new Gson();
                     DataChat dataChat = gson.fromJson(responseString, DataChat.class);
@@ -275,14 +282,16 @@ public class ChatActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(this, HomeActivity.class));
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 
     @Subscribe
     public void getMessage(MessageChat msg) {
 
-        if (msg != null && msg.getTo().equals(emailfrom)) {
+        if (msg != null && msg.getAction() == null && msg.getTo().equals(emailfrom)) {
             showMessage(msg.getData().toString(), msg.getCreated_at().toString());
 //            Log.d("even bus msg", msg);
         } else if (msg != null && msg.getAction() != null && msg.getEmail().equals(emailfrom)) {
@@ -510,8 +519,7 @@ public class ChatActivity extends Activity {
         MySharePreferences.setValue(this, "token", null);
         MySharePreferences.setValue(this, "checked", false);
         mSharedPreferences.edit().putString(GCMConfig.PREFERENCE_KEY_REG_ID, null).commit();
-
-        finish();
+        this.finish();
         startActivity(new Intent(this, SplashActivity.class));
     }
 }

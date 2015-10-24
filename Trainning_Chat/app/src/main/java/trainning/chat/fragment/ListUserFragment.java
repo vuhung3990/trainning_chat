@@ -32,6 +32,7 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 import trainning.chat.activity.ChatActivity;
 import trainning.chat.R;
+import trainning.chat.activity.HomeActivity;
 import trainning.chat.activity.LogInActivity;
 import trainning.chat.adapter.ContactAdapter;
 import trainning.chat.activity.AddFriendActivity;
@@ -84,6 +85,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         mRcvContact.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDialog = new ProgressDialog(getActivity());
+        mDialog.show();
         users = new ArrayList<>();
         myEmail = MySharePreferences.getValue(getActivity(), "email", "");
 
@@ -125,6 +127,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
         return view;
+
 
     }
 
@@ -178,12 +181,14 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
         RequestUtils.getContactList(my_email, new RequestUtils.contactCallback() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                dismissProgressDialog();
 //                Log.d("CONTACT-LIST", responseString);
                 swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
+              dismissProgressDialog();
                 Log.d("CONTACT-LIST", responseString);
                 swipeRefreshLayout.setRefreshing(false);
                 if (responseString != null) {
@@ -204,6 +209,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                             startActivity(intent);
                         }
 
+
                         @Override
                         public void setOnItemLongClick(final int position) {
                             if (search) {
@@ -216,7 +222,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                         public void onClick(DialogInterface arg0, int arg1) {
                                             email = MySharePreferences.getValue(getActivity(), "email", "");
                                             token = MySharePreferences.getValue(getActivity(), "token", "");
-                                            mDialog.show();
+                                            dismissProgressDialog();
                                             RequestUtils.addFriend(email, token, users.get(position).getEmail(), new RequestUtils.addFriendCallback() {
                                                 @Override
                                                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -230,7 +236,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                                                     addNewFr = true;
                                                     Log.d("Add Friend", responseString);
-                                                    mDialog.dismiss();
+                                                    dismissProgressDialog();
                                                     Toast.makeText(getActivity(), "Add Success", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
@@ -252,6 +258,8 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
                                 }
+
+
                             } else {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                                 alertDialogBuilder.setMessage("Un Friend ?");
@@ -269,14 +277,14 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                             @Override
                                             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                                 Log.d("Un Friend", statusCode + "--------" + responseString + "");
-                                                mDialog.dismiss();
+                                                dismissProgressDialog();
                                                 Toast.makeText(getActivity(), "UnFriend not success, please check network", Toast.LENGTH_LONG).show();
                                             }
 
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                                                 Log.d("Un Friend", responseString + "");
-                                                mDialog.dismiss();
+                                                dismissProgressDialog();
                                                 Toast.makeText(getActivity(), "UnFriend Success", Toast.LENGTH_LONG).show();
                                             }
                                         });
@@ -321,4 +329,16 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
         getContact(myEmail);
     }
 
+
+    private void dismissProgressDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dismissProgressDialog();
+    }
 }

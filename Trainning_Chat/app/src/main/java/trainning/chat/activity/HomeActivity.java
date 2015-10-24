@@ -48,6 +48,7 @@ public class HomeActivity extends FragmentActivity {
     private Fragment[] fragments = {new HistoryFragment(), new ListUserFragment(), new SettingFragment()};
     private SharedPreferences mSharedPreferences;
     private String email;
+    public static boolean back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,5 +126,12 @@ public class HomeActivity extends FragmentActivity {
 
         finish();
         startActivity(new Intent(this, SplashActivity.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        back = true;
+
     }
 }

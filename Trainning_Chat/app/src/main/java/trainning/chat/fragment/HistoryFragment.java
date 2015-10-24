@@ -1,5 +1,6 @@
 package trainning.chat.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ArrayList<HistoryItem> users;
     private MessageChat message;
     String email;
+    private ProgressDialog mDialog;
 
     public void setMessage(MessageChat message) {
         this.message = message;
@@ -72,6 +74,9 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         users = new ArrayList<>();
         mAdapter = new HistoryAdapter(getActivity(), users);
         mRcvUser.setAdapter(mAdapter);
+        mDialog = new ProgressDialog(getActivity());
+        mDialog.show();
+
         getHistory();
         return view;
 
@@ -107,12 +112,14 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         RequestUtils.getHistoryList(email, new RequestUtils.historyCallback() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                mDialog.dismiss();
                 Toast.makeText(getActivity(), "Get list Fail,please check network", Toast.LENGTH_SHORT).show();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                mDialog.dismiss();
                 mSwipeRefreshLayout.setRefreshing(false);
                 Gson gson = new Gson();
                 HistoryUser content = gson.fromJson(responseString, HistoryUser.class);

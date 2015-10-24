@@ -33,6 +33,7 @@
                 <TextView
                     android:id="@+id/tvUsername"
                     android:layout_width="wrap_content"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"
                     android:text="User Name"
                     android:textColor="@color/black"
@@ -40,9 +41,10 @@
 
                 <TextView
                     android:id="@+id/tvMessage_latter"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Message..."
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textSize="14dp" />
             </LinearLayout>
