@@ -252,6 +252,49 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
                                 }
+                            } else {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                alertDialogBuilder.setMessage("Un Friend ?");
+
+                                alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface arg0, int arg1) {
+                                        email = MySharePreferences.getValue(getActivity(), "email", "");
+                                        token = MySharePreferences.getValue(getActivity(), "token", "");
+                                        mDialog.show();
+                                        RequestUtils.unFriend(email, token, users.get(position).getEmail(), new RequestUtils.unFriendCallback() {
+                                            @Override
+                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                                Log.d("Un Friend", statusCode + "--------" + responseString + "");
+                                                mDialog.dismiss();
+                                                Toast.makeText(getActivity(), "UnFriend not success, please check network", Toast.LENGTH_LONG).show();
+                                            }
+
+                                            @Override
+                                            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                                                addNewFr = true;
+                                                Log.d("Un Friend", responseString + "");
+                                                mDialog.dismiss();
+                                                Toast.makeText(getActivity(), "UnFriend Success", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+
+                                    }
+
+
+                                });
+
+                                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+
                             }
                         }
                     }

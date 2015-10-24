@@ -12,7 +12,7 @@ public class Utils {
     public static final String API_SEARCH = "http://trainningchat-vuhung3990.rhcloud.com/search";
     public static final String API_ADD_FRIEND = "http://trainningchat-vuhung3990.rhcloud.com/addFriend";
     public static final String API_CONTACT = " http://trainningchat-vuhung3990.rhcloud.com/friendList";
-
+    public static final String API_UN_FRIEND = "http://trainningchat-vuhung3990.rhcloud.com/unFriend";
     public static final int KEY_SEND_SUCCESS = 2;
     public static final int KEY_SEND_FAIL = 0;
     public static final int KEY_SEND_SENDING = 1;

@@ -102,20 +102,20 @@ public class ChatActivity extends Activity {
         client = new AsyncHttpClient();
         params = new RequestParams();
         params.put("from", emailfrom);
-        Log.d("Email From", emailfrom);
+        Log.d("Email From", emailfrom + "");
         params.put("to", to);
-        Log.d("Email To", to);
+        Log.d("Email To", to + "");
         client.get(Utils.API_CHAT_ROOM, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
                 if (responseString != null)
-                    Log.d("Send message Fail", responseString);
+                    Log.d("Send message Fail", responseString + "");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d("Message History", responseString);
+                Log.d("Message History", responseString + "");
 
                 if (responseString != null) {
                     Gson gson = new Gson();
@@ -133,7 +133,7 @@ public class ChatActivity extends Activity {
                                 message.setId(2);
                             }
                             messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), Utils.KEY_SEND_SUCCESS));
-                            Log.d("CHAT-DATA", message.getUpdated_at());
+                            Log.d("CHAT-DATA", message.getUpdated_at() + "");
                         }
                         Collections.reverse(messages);
 
@@ -205,7 +205,7 @@ public class ChatActivity extends Activity {
 
                 token = MySharePreferences.getValue(ChatActivity.this, "token", "");
 
-                Log.d("ChatAc TOKEN SEND", token);
+                Log.d("ChatAc TOKEN SEND", token + "");
                 message_input = edtMessage.getText().toString();
                 client = new AsyncHttpClient();
                 params = new RequestParams();
@@ -242,7 +242,7 @@ public class ChatActivity extends Activity {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        Log.d("ChatActivity chatstatus", responseString);
+                        Log.d("ChatActivity chatstatus", responseString + "");
                         messages.get(messages.size() - 1).setStatus(Utils.KEY_SEND_SUCCESS);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -367,7 +367,7 @@ public class ChatActivity extends Activity {
 
         for (int i = 0; i < loadlimit; i++) {
             messageFirst.add(messages.get(i));
-            Log.d("TIME---", messages.get(i).getTime());
+            Log.d("TIME---", messages.get(i).getTime() + "");
         }
 
         Collections.reverse(messageFirst);

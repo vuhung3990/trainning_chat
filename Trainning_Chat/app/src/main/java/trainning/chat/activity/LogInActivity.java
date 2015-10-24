@@ -103,7 +103,7 @@ public class LogInActivity extends AppCompatActivity {
             if (email.isEmpty() || token.isEmpty()) {
                 return;
             } else {
-                Log.d("Test-------------", token);
+                Log.d("Test-------------", token+"");
                 autoLogIn(email, token);
             }
         }

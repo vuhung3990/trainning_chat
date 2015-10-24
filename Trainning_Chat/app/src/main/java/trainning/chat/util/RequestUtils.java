@@ -137,7 +137,7 @@ public class RequestUtils {
         params.put("owner", email);
         params.put("token", token);
         params.put("friend", emailFriend);
-        client.post("http://trainningchat-vuhung3990.rhcloud.com/addFriend", params, new TextHttpResponseHandler() {
+        client.post(Utils.API_ADD_FRIEND, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 addFriendCallback.onFailure(statusCode, headers, responseString, throwable);
@@ -151,6 +151,26 @@ public class RequestUtils {
 
     }
 
+    public static void unFriend(String email, String token, String emailFriend, final unFriendCallback unFriendCallback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("owner", email);
+        params.put("friend", emailFriend);
+        params.put("token", token);
+        client.post(Utils.API_UN_FRIEND, params, new TextHttpResponseHandler() {
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                unFriendCallback.onFailure(statusCode, headers, responseString, throwable);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                unFriendCallback.onSuccess(statusCode, headers, responseString);
+            }
+        });
+
+    }
 
     public interface logInCallback {
         void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable);
@@ -179,6 +199,13 @@ public class RequestUtils {
     }
 
     public interface addFriendCallback {
+        void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable);
+
+        void onSuccess(int statusCode, Header[] headers, String responseString);
+    }
+
+    public interface unFriendCallback {
+
         void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable);
 
         void onSuccess(int statusCode, Header[] headers, String responseString);
