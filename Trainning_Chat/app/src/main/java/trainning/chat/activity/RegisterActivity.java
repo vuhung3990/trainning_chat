@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                                                if (statusCode == 400) {
                                                                    mDialog.dismiss();
-                                                                   Toast.makeText(getApplicationContext(), "register not success, Email already exists", Toast.LENGTH_LONG).show();
+                                                                   Toast.makeText(getApplicationContext(), "Register not success, The email has already been taken.", Toast.LENGTH_LONG).show();
 
                                                                } else {
                                                                    mDialog.dismiss();

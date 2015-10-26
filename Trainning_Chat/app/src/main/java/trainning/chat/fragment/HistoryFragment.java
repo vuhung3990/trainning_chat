@@ -112,6 +112,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         RequestUtils.getHistoryList(email, new RequestUtils.historyCallback() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
                 mDialog.dismiss();
                 Toast.makeText(getActivity(), "Get list Fail,please check network", Toast.LENGTH_SHORT).show();
                 mSwipeRefreshLayout.setRefreshing(false);

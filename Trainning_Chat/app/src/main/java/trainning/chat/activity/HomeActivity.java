@@ -49,6 +49,7 @@ public class HomeActivity extends FragmentActivity {
     private SharedPreferences mSharedPreferences;
     private String email;
     public static boolean back;
+    public SearchOnBackPessListener searchOnBackPessListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +131,26 @@ public class HomeActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        back = true;
+
+        if (ListUserFragment.search) {
+
+            List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+            if (fragmentList != null) {
+                for (Fragment fragment : fragmentList) {
+                    if (fragment instanceof SearchOnBackPessListener) {
+                        ((SearchOnBackPessListener) fragment).searchOnbackListener();
+                    }
+                }
+            }
+        } else {
+            super.onBackPressed();
+        }
+//
+        back  = true;
+    }
+
+    public interface SearchOnBackPessListener {
+        void searchOnbackListener();
 
     }
 }

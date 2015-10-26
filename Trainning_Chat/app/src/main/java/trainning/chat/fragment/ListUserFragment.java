@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import cz.msebera.android.httpclient.Header;
 import trainning.chat.R;
 import trainning.chat.activity.AddFriendActivity;
 import trainning.chat.activity.ChatActivity;
+import trainning.chat.activity.HomeActivity;
 import trainning.chat.adapter.ContactAdapter;
 import trainning.chat.entity.contact.ContactUser;
 import trainning.chat.entity.contact.Contacts;
@@ -43,7 +45,7 @@ import trainning.chat.util.Utils;
 /**
  * Created by ASUS on 10/10/2015.
  */
-public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, HomeActivity.SearchOnBackPessListener {
     private RecyclerView mRcvContact;
     private ArrayList<ContactUser> users;
     private ContactAdapter mAdapter;
@@ -54,11 +56,12 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
     private List<ContactUser> saveListUserForSearchView = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private String myEmail;
-    private boolean search = false;
+    public static boolean search = false;
     private ProgressDialog mDialog;
     String email;
     String token;
     private boolean addNewFr = false;
+    private Gson gson;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Nullable
@@ -80,6 +83,9 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                 startActivity(new Intent(getActivity(), AddFriendActivity.class));
             }
         });
+
+        gson = new Gson();
+        email = MySharePreferences.getValue(getActivity(), "email", "");
 
         mRcvContact.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDialog = new ProgressDialog(getActivity());
@@ -123,7 +129,20 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
 
             }
+
         });
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (i == KeyEvent.KEYCODE_BACK) {
+//                    if (search) {
+//                        mSearchView.onActionViewCollapsed();
+//                    }
+//                }
+//
+//                return false;
+//            }
+//        });
         return view;
 
 
@@ -160,7 +179,10 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Gson gson = new Gson();
                 Contacts contact = gson.fromJson(responseString, Contacts.class);
                 users.clear();
-                users.addAll(contact.getData());
+                for (ContactUser user : contact.getData()) {
+                    if (!user.getEmail().equals(email)) users.add(user);
+                }
+
 //                Log.d("SEARCH-LIST", users.get(0).getEmail());
                 mAdapter.notifyDataSetChanged();
             }
@@ -343,5 +365,17 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDestroy() {
         super.onDestroy();
         dismissProgressDialog();
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @Override
+    public void searchOnbackListener() {
+        mSearchView.onActionViewCollapsed();
+        users.clear();
+        users.addAll(saveListUserForSearchView);
+        mAdapter.notifyDataSetChanged();
+        search = false;
+
+
     }
 }
