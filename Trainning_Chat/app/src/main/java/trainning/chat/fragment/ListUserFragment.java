@@ -30,12 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-import trainning.chat.activity.ChatActivity;
 import trainning.chat.R;
-import trainning.chat.activity.HomeActivity;
-import trainning.chat.activity.LogInActivity;
-import trainning.chat.adapter.ContactAdapter;
 import trainning.chat.activity.AddFriendActivity;
+import trainning.chat.activity.ChatActivity;
+import trainning.chat.adapter.ContactAdapter;
 import trainning.chat.entity.contact.ContactUser;
 import trainning.chat.entity.contact.Contacts;
 import trainning.chat.util.MySharePreferences;
