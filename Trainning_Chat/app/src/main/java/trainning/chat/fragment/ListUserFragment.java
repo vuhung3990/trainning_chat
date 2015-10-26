@@ -241,9 +241,11 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                     alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface arg0, int arg1) {
+                                            mDialog.show();
                                             email = MySharePreferences.getValue(getActivity(), "email", "");
                                             token = MySharePreferences.getValue(getActivity(), "token", "");
-                                            dismissProgressDialog();
+//                                            dismissProgressDialog();
+
                                             if (email.equals(users.get(position).getEmail())) {
                                                 Toast.makeText(getActivity(), "Add Fail", Toast.LENGTH_SHORT).show();
                                             } else {
@@ -307,6 +309,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                                                 Log.d("Un Friend", responseString + "");
+                                                saveListUserForSearchView.remove(position);
                                                 users.remove(position);
                                                 mAdapter.notifyDataSetChanged();
                                                 dismissProgressDialog();
