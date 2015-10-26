@@ -240,10 +240,14 @@ public class LogInActivity extends AppCompatActivity {
     private void showError(String responseString) {
         Error error = gson.fromJson(responseString, Error.class);
         String totalError = "";
-        for (String e : error.getData()) {
-            totalError += e + "\n";
+        if (error!=null) {
+            for (String e : error.getData()) {
+                totalError += e + "\n";
+            }
+            Toast.makeText(getApplicationContext(), totalError, Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(getApplicationContext(), "LogIn Fail, please check network", Toast.LENGTH_LONG).show();
         }
-        Toast.makeText(getApplicationContext(), totalError, Toast.LENGTH_LONG).show();
     }
 
     private void autoLogIn(String email, String token) {
@@ -255,6 +259,7 @@ public class LogInActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Log.d("LogIn Fail", statusCode + "---" + responseString);
+
                     mDialog.dismiss();
                     showError(responseString);
 //                    if (statusCode == 400) {

@@ -123,6 +123,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                        RequestUtils.register(email, userName, password, new RequestUtils.registerCallback() {
                                                            @Override
                                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                                               if (statusCode == 0 && responseString == null) {
+                                                                   Toast.makeText(getApplicationContext(), "Register not success, please check network", Toast.LENGTH_LONG).show();
+
+                                                               }
                                                                if (statusCode == 400) {
                                                                    mDialog.dismiss();
                                                                    Toast.makeText(getApplicationContext(), "Register not success, The email has already been taken.", Toast.LENGTH_LONG).show();
