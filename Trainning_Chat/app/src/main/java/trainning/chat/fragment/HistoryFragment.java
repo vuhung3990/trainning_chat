@@ -120,17 +120,24 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                mDialog.dismiss();
+              dismissProgressDialog();
                 mSwipeRefreshLayout.setRefreshing(false);
                 Gson gson = new Gson();
                 HistoryUser content = gson.fromJson(responseString, HistoryUser.class);
                 datas = new ArrayList<HistoryUserData>();
                 datas = content.getData();
-
+                String flag_message_email = MySharePreferences.getValue(getActivity(), "flag_message", "");
                 for (HistoryUserData data : datas) {
-                    users.add(new HistoryItem(data.getEmail(), data.getData(), data.getCreated_at().getDate(), false));
+                    if (data.getEmail().equals(flag_message_email)) {
+                        users.add(new HistoryItem(data.getEmail(), data.getData(), data.getCreated_at().getDate(), true));
+                    } else {
+                        users.add(new HistoryItem(data.getEmail(), data.getData(), data.getCreated_at().getDate(), false));
+                    }
+
 
                     Log.d("History list DATA", data.getEmail() + "");
+
+
                 }
                 mAdapter.notifyDataSetChanged();
 //                mAdapter = new HistoryAdapter(getActivity(), users);
@@ -147,6 +154,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         if (getMessage() != null) {
                             if (users.get(position).getEmail().equals(getMessage().getFrom())) {
                                 users.get(position).setFlag_inbox(false);
+                                MySharePreferences.setValue(getActivity(), "flag_message", "");
 
                                 mAdapter.notifyDataSetChanged();
 
@@ -172,12 +180,17 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
             if (users.get(i).getEmail().equals(message.getFrom())) {
                 users.get(i).setFlag_inbox(true);
                 mAdapter.notifyDataSetChanged();
+                MySharePreferences.setValue(getActivity(), "flag_message", message.getFrom());
             }
 
         }
 
     }
-
+    private void dismissProgressDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+    }
     @Override
     public void onRefresh() {
         mSwipeRefreshLayout.post(new Runnable() {

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.util.List;
+import java.util.logging.Handler;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
@@ -155,6 +156,8 @@ public class LogInActivity extends AppCompatActivity {
         mBtnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 final ProgressDialog mDialog = new ProgressDialog(LogInActivity.this);
                 mDialog.setTitle("Loging....");
 
@@ -195,7 +198,6 @@ public class LogInActivity extends AppCompatActivity {
                             MySharePreferences.setValue(getApplicationContext(), "email", email);
 //                            if (getAutoLogIn()) {
                             MySharePreferences.setValue(getApplicationContext(), "token", token);
-
 //                            }
 
 //                            MySharePreferences.setValue(getApplicationContext(), "password", password);
@@ -313,4 +315,6 @@ public class LogInActivity extends AppCompatActivity {
             this.data = data;
         }
     }
+
+
 }

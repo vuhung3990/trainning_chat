@@ -374,9 +374,14 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void searchOnbackListener() {
         mSearchView.onActionViewCollapsed();
-        users.clear();
-        users.addAll(saveListUserForSearchView);
-        mAdapter.notifyDataSetChanged();
+        if (!addNewFr) {
+
+            users.addAll(saveListUserForSearchView);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            getContact(myEmail);
+            addNewFr = false;
+        }
         search = false;
 
 

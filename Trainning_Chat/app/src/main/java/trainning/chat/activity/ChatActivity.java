@@ -317,9 +317,9 @@ public class ChatActivity extends Activity {
 
     private void showMessage(String msg, String date) {
 
-        messageFirst.add(new Message(2, msg, date, Utils.KEY_SEND_SUCCESS));
+        messages.add(new Message(2, msg, date, Utils.KEY_SEND_SUCCESS));
         mAdapter.notifyDataSetChanged();
-        mRcvChat.scrollToPosition(messageFirst.size() - 1);
+        mRcvChat.scrollToPosition(messages.size() - 1);
 
     }
 
