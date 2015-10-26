@@ -113,18 +113,18 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                     users.addAll(saveListUserForSearchView);
                     mAdapter.notifyDataSetChanged();
                 } else {
-
-                    RequestUtils.getContactList(myEmail, new RequestUtils.contactCallback() {
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            getContact(myEmail);
-                        }
-
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                            getContact(myEmail);
-                        }
-                    });
+                    getContact(myEmail);
+//                    RequestUtils.getContactList(myEmail, new RequestUtils.contactCallback() {
+//                        @Override
+//                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                            getContact(myEmail);
+//                        }
+//
+//                        @Override
+//                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+//                            getContact(myEmail);
+//                        }
+//                    });
                     addNewFr = false;
                 }
                 return false;
