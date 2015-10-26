@@ -35,7 +35,6 @@ import trainning.chat.R;
 import trainning.chat.activity.AddFriendActivity;
 import trainning.chat.activity.ChatActivity;
 import trainning.chat.activity.HomeActivity;
-import trainning.chat.activity.LogInActivity;
 import trainning.chat.adapter.ContactAdapter;
 import trainning.chat.entity.contact.ContactUser;
 import trainning.chat.entity.contact.Contacts;
@@ -304,6 +303,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                                 Log.d("Un Friend", statusCode + "--------" + responseString + "");
                                                 dismissProgressDialog();
+                                                Toast.makeText(getActivity(), "UnFriend not success, please check network", Toast.LENGTH_LONG).show();
                                             }
 
                                             @Override
