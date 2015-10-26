@@ -23,6 +23,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
@@ -103,7 +104,7 @@ public class LogInActivity extends AppCompatActivity {
             if (email.isEmpty() || token.isEmpty()) {
                 return;
             } else {
-                Log.d("Test-------------", token+"");
+                Log.d("Test-------------", token + "");
                 autoLogIn(email, token);
             }
         }
@@ -176,12 +177,13 @@ public class LogInActivity extends AppCompatActivity {
                         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                             Log.d("STATUS CODE_Fail", statusCode + "" + responseString);
                             mDialog.dismiss();
+
                             if (statusCode == 400) {
-                                Toast.makeText(getApplicationContext(), "LogIn Fail,token is wrong account was logged by other devices", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "LogIn Fail, password not match", Toast.LENGTH_SHORT).show();
                             } else if (statusCode == 500) {
                                 Toast.makeText(getApplicationContext(), "LogIn Fail, please check network", Toast.LENGTH_SHORT).show();
                             } else if (statusCode == 404) {
-                                Toast.makeText(getApplicationContext(), "Email or Password is wrong", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "LogIn Fail, email not exist in database", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -247,11 +249,11 @@ public class LogInActivity extends AppCompatActivity {
                     Log.d("LogIn Fail", statusCode + "---" + responseString);
                     mDialog.dismiss();
                     if (statusCode == 400) {
-                        Toast.makeText(getApplicationContext(), "LogIn Fail,token is wrong account was logged by other devices", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "LogIn Fail, password not match", Toast.LENGTH_SHORT).show();
                     } else if (statusCode == 500) {
                         Toast.makeText(getApplicationContext(), "LogIn Fail, please check network", Toast.LENGTH_SHORT).show();
                     } else if (statusCode == 404) {
-                        Toast.makeText(getApplicationContext(), "Email or Password is wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "LogIn Fail, email not exist in database", Toast.LENGTH_SHORT).show();
                     }
                 }
 

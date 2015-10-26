@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ import trainning.chat.util.Utils;
 /**
  * Created by ASUS on 10/10/2015.
  */
-public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, HomeActivity.SearchOnBackPessListener {
     private RecyclerView mRcvContact;
     private ArrayList<ContactUser> users;
     private ContactAdapter mAdapter;
@@ -56,7 +57,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
     private List<ContactUser> saveListUserForSearchView = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private String myEmail;
-    private boolean search = false;
+    public static boolean search = false;
     private ProgressDialog mDialog;
     String email;
     String token;
@@ -125,7 +126,20 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
 
             }
+
         });
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (i == KeyEvent.KEYCODE_BACK) {
+//                    if (search) {
+//                        mSearchView.onActionViewCollapsed();
+//                    }
+//                }
+//
+//                return false;
+//            }
+//        });
         return view;
 
 
@@ -345,5 +359,17 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDestroy() {
         super.onDestroy();
         dismissProgressDialog();
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @Override
+    public void searchOnbackListener() {
+        mSearchView.onActionViewCollapsed();
+        users.clear();
+        users.addAll(saveListUserForSearchView);
+        mAdapter.notifyDataSetChanged();
+        search = false;
+
+
     }
 }
