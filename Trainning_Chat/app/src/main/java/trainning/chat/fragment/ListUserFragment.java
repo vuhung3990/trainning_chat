@@ -188,7 +188,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-              dismissProgressDialog();
+                dismissProgressDialog();
                 Log.d("CONTACT-LIST", responseString);
                 swipeRefreshLayout.setRefreshing(false);
                 if (responseString != null) {
@@ -223,27 +223,30 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                             email = MySharePreferences.getValue(getActivity(), "email", "");
                                             token = MySharePreferences.getValue(getActivity(), "token", "");
                                             dismissProgressDialog();
-                                            RequestUtils.addFriend(email, token, users.get(position).getEmail(), new RequestUtils.addFriendCallback() {
-                                                @Override
-                                                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                                    Log.d("Add Friend", responseString);
-                                                    mDialog.dismiss();
-                                                    Toast.makeText(getActivity(), "Add Fail, Email had in contact or not exist", Toast.LENGTH_SHORT).show();
-                                                }
+                                            if (email.equals(users.get(position).getEmail())) {
+                                                Toast.makeText(getActivity(), "Add Fail", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                RequestUtils.addFriend(email, token, users.get(position).getEmail(), new RequestUtils.addFriendCallback() {
+                                                    @Override
+                                                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                                        Log.d("Add Friend", responseString);
+                                                        mDialog.dismiss();
+                                                        Toast.makeText(getActivity(), "Add Fail, Email had in contact or not exist", Toast.LENGTH_SHORT).show();
+                                                    }
 
-                                                @Override
-                                                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                                                    @Override
+                                                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
 
-                                                    addNewFr = true;
-                                                    Log.d("Add Friend", responseString);
-                                                    dismissProgressDialog();
-                                                    Toast.makeText(getActivity(), "Add Success", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                                        addNewFr = true;
+                                                        Log.d("Add Friend", responseString);
+                                                        dismissProgressDialog();
+                                                        Toast.makeText(getActivity(), "Add Success", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                            }
 
                                         }
-
-
                                     });
 
                                     alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -284,6 +287,8 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                             @Override
                                             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                                                 Log.d("Un Friend", responseString + "");
+                                                users.remove(position);
+                                                mAdapter.notifyDataSetChanged();
                                                 dismissProgressDialog();
                                                 Toast.makeText(getActivity(), "UnFriend Success", Toast.LENGTH_LONG).show();
                                             }

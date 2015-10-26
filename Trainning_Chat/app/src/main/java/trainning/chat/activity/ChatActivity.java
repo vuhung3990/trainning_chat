@@ -93,7 +93,7 @@ public class ChatActivity extends Activity {
         this.mSharedPreferences = this.getSharedPreferences(GCMConfig.PREFERENCE_NAME, Context.MODE_PRIVATE);
 //        reg_ID = mSharedPreferences.getString(GCMConfig.PREFERENCE_KEY_REG_ID, null);
         messages = new ArrayList<>();
-        mAdapter = new ChatAdapter(messageFirst, mRcvChat);
+        mAdapter = new ChatAdapter(messages, mRcvChat);
         mRcvChat.setAdapter(mAdapter);
 
         mDialog = new ProgressDialog(this);
@@ -142,14 +142,14 @@ public class ChatActivity extends Activity {
                             messages.add(new Message(message.getId(), message.getData(), message.getCreated_at(), Utils.KEY_SEND_SUCCESS));
                             Log.d("CHAT-DATA", message.getUpdated_at() + "");
                         }
-//                        Collections.reverse(messages);
-//
-//
-//                        Log.d("messages", messages.size() + "");
-//                        mAdapter.notifyDataSetChanged();
-//                        mRcvChat.scrollToPosition(messages.size() - 1);
+                        Collections.reverse(messages);
 
-                        loadDataFirst();
+
+                        Log.d("messages", messages.size() + "");
+                        mAdapter.notifyDataSetChanged();
+                        mRcvChat.scrollToPosition(messages.size() - 1);
+
+//                        loadDataFirst();
 //                        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
 //                            @Override
 //                            public void onLoadMore() {
@@ -225,10 +225,10 @@ public class ChatActivity extends Activity {
                 dateFormatter.setLenient(false);
                 Date today = new Date();
                 String s = dateFormatter.format(today);
-                messageFirst.add(new Message(1, message_input, s, Utils.KEY_SEND_SENDING));
+                messages.add(new Message(1, message_input, s, Utils.KEY_SEND_SENDING));
                 mAdapter.notifyDataSetChanged();
                 edtMessage.setText(null);
-                mRcvChat.scrollToPosition(messageFirst.size() - 1);
+                mRcvChat.scrollToPosition(messages.size() - 1);
 
                 Log.d("ChatActivity Message", edtMessage.getText() + "");
 
@@ -242,15 +242,14 @@ public class ChatActivity extends Activity {
                         }
 
 
-                        messageFirst.get(messageFirst.size() - 1).setStatus(Utils.KEY_SEND_FAIL);
+                        messages.get(messages.size() - 1).setStatus(Utils.KEY_SEND_FAIL);
                         mAdapter.notifyDataSetChanged();
-                        mRcvChat.scrollToPosition(messages.size() - 1);
                     }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
                         Log.d("ChatActivity chatstatus", responseString + "");
-                        messageFirst.get(messageFirst.size() - 1).setStatus(Utils.KEY_SEND_SUCCESS);
+                        messages.get(messages.size() - 1).setStatus(Utils.KEY_SEND_SUCCESS);
                         mAdapter.notifyDataSetChanged();
                     }
                 });

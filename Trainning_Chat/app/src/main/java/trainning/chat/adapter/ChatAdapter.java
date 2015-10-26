@@ -38,7 +38,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public ChatAdapter(ArrayList<Message> messages, RecyclerView recyclerView) {
+    public ChatAdapter(final ArrayList<Message> messages, RecyclerView recyclerView) {
 
         this.messages = messages;
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
@@ -56,15 +56,17 @@ public class ChatAdapter extends RecyclerView.Adapter {
 //                    totalItemCount = linearLayoutManager.getItemCount();
 //                    lastVisibleItem = linearLayoutManager
 //                            .findLastVisibleItemPosition();
-                    firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                    if (!loading
-                            && firstVisibleItem <= visibleThreshold) {
-                        // End has been reached
-                        // Do something
-                        if (onLoadMoreListener != null) {
-                            onLoadMoreListener.onLoadMore();
+                    if (messages.size() > 10) {
+                        firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                        if (!loading
+                                && firstVisibleItem <= visibleThreshold) {
+                            // End has been reached
+                            // Do something
+                            if (onLoadMoreListener != null) {
+                                onLoadMoreListener.onLoadMore();
+                            }
+                            loading = true;
                         }
-                        loading = true;
                     }
                 }
             });
