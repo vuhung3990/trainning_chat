@@ -31,12 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-import trainning.chat.activity.ChatActivity;
 import trainning.chat.R;
+import trainning.chat.activity.AddFriendActivity;
+import trainning.chat.activity.ChatActivity;
 import trainning.chat.activity.HomeActivity;
 import trainning.chat.activity.LogInActivity;
 import trainning.chat.adapter.ContactAdapter;
-import trainning.chat.activity.AddFriendActivity;
 import trainning.chat.entity.contact.ContactUser;
 import trainning.chat.entity.contact.Contacts;
 import trainning.chat.util.MySharePreferences;
@@ -62,6 +62,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
     String email;
     String token;
     private boolean addNewFr = false;
+    private Gson gson;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Nullable
@@ -83,6 +84,9 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                 startActivity(new Intent(getActivity(), AddFriendActivity.class));
             }
         });
+
+        gson = new Gson();
+        email = MySharePreferences.getValue(getActivity(), "email", "");
 
         mRcvContact.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDialog = new ProgressDialog(getActivity());
@@ -176,7 +180,10 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Gson gson = new Gson();
                 Contacts contact = gson.fromJson(responseString, Contacts.class);
                 users.clear();
-                users.addAll(contact.getData());
+                for (ContactUser user : contact.getData()) {
+                    if (!user.getEmail().equals(email)) users.add(user);
+                }
+
 //                Log.d("SEARCH-LIST", users.get(0).getEmail());
                 mAdapter.notifyDataSetChanged();
             }
@@ -295,7 +302,6 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
                                             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                                                 Log.d("Un Friend", statusCode + "--------" + responseString + "");
                                                 dismissProgressDialog();
-                                                Toast.makeText(getActivity(), "UnFriend not success, please check network", Toast.LENGTH_LONG).show();
                                             }
 
                                             @Override
