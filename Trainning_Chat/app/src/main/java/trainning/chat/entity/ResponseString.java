@@ -1,5 +1,7 @@
 package trainning.chat.entity;
 
+import java.util.List;
+
 /**
  * Created by ASUS on 12/10/2015.
  */
@@ -32,6 +34,8 @@ public class ResponseString {
         return data;
     }
 
+    public List<String> getDataString() {return data != null ? getData().getStringList() : null;}
+
     public String getToken(){
         return data != null ? getData().getToken() : null;
     }
@@ -42,6 +46,16 @@ public class ResponseString {
 }
 
 class Data {
+    private List<String> stringList;
+
+    public List<String> getStringList() {
+        return stringList;
+    }
+
+    public void setStringList(List<String> stringList) {
+        this.stringList = stringList;
+    }
+
     public String token;
 
     public void setToken(String token) {
