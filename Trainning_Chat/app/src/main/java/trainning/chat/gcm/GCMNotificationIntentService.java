@@ -20,6 +20,7 @@ import trainning.chat.R;
 import trainning.chat.activity.ChatActivity;
 import trainning.chat.entity.chatroom.DataChat;
 import trainning.chat.entity.chatroom.MessageChat;
+import trainning.chat.fragment.SettingFragment;
 
 /**
  * Created by ASUS on 06/08/2015.
@@ -74,12 +75,13 @@ public class GCMNotificationIntentService extends IntentService {
 //                Log.d("NotifiService Data", message.getData());
                 String data = message.getData();
                 from_email = message.getFrom();
+                if (SettingFragment.notify_on) {
+                    Log.d("notify_on", SettingFragment.notify_on + "");
+                    if (!ChatActivity.isrunning) {
+                        sendNotification(from_email, "" + data);
 
-                if (!ChatActivity.isrunning) {
-                    sendNotification(from_email, "" + data);
-
+                    }
                 }
-
                 Log.i(GCMConfig.LOG_TAG, "Received: " + extras.toString());
             }
 

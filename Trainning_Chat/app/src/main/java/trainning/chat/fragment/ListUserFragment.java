@@ -97,6 +97,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("xx", "setOnSearchClickListener");
                 search = true;
                 users.clear();
                 mAdapter.notifyDataSetChanged();
@@ -105,6 +106,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+                Log.d("xx", "setOnCloseListener");
                 search = false;
                 users.clear();
                 if (!addNewFr) {
@@ -156,6 +158,7 @@ public class ListUserFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public boolean onQueryTextSubmit(String s) {
+        Log.d("xx", "onQueryTextSubmit");
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {

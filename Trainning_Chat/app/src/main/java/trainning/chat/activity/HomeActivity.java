@@ -131,7 +131,6 @@ public class HomeActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-
         if (ListUserFragment.search) {
 
             List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
